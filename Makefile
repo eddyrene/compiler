@@ -52,12 +52,14 @@ SOURCES       = main.cpp \
 		mainwindow.cpp \
 		compiler.cpp \
 		lexer.cpp \
-		symbols_table.cpp moc_mainwindow.cpp
+		symbols_table.cpp \
+		automata.cpp moc_mainwindow.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		compiler.o \
 		lexer.o \
 		symbols_table.o \
+		automata.o \
 		moc_mainwindow.o
 DIST          = resources/symbols_table.txt \
 		../../../Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
@@ -211,11 +213,13 @@ DIST          = resources/symbols_table.txt \
 		compiler.pro mainwindow.h \
 		compiler.h \
 		lexer.h \
-		symbols_table.h main.cpp \
+		symbols_table.h \
+		automata.h main.cpp \
 		mainwindow.cpp \
 		compiler.cpp \
 		lexer.cpp \
-		symbols_table.cpp
+		symbols_table.cpp \
+		automata.cpp
 QMAKE_TARGET  = compiler
 DESTDIR       = 
 TARGET        = compiler
@@ -546,8 +550,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h compiler.h lexer.h symbols_table.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp mainwindow.cpp compiler.cpp lexer.cpp symbols_table.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.h compiler.h lexer.h symbols_table.h automata.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp mainwindow.cpp compiler.cpp lexer.cpp symbols_table.cpp automata.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
 
@@ -677,6 +681,10 @@ moc_mainwindow.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
+		compiler.h \
+		lexer.h \
+		symbols_table.h \
+		automata.h \
 		mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/n/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/n/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/n/Documents/proyecto-compiladores/compiler -I/home/n/Qt5.7.0/5.7/gcc_64/include -I/home/n/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/n/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/n/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
@@ -801,15 +809,17 @@ main.o: main.cpp mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
+		compiler.h \
+		lexer.h \
+		symbols_table.h \
+		automata.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		symbols_table.h \
-		lexer.h
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 mainwindow.o: mainwindow.cpp mainwindow.h \
@@ -913,6 +923,10 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
+		compiler.h \
+		lexer.h \
+		symbols_table.h \
+		automata.h \
 		ui_mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
@@ -949,6 +963,8 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
@@ -969,15 +985,23 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
-compiler.o: compiler.cpp compiler.h
+compiler.o: compiler.cpp compiler.h \
+		lexer.h \
+		symbols_table.h \
+		automata.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o compiler.o compiler.cpp
 
 lexer.o: lexer.cpp lexer.h \
-		symbols_table.h
+		symbols_table.h \
+		automata.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o lexer.o lexer.cpp
 
-symbols_table.o: symbols_table.cpp symbols_table.h
+symbols_table.o: symbols_table.cpp symbols_table.h \
+		automata.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o symbols_table.o symbols_table.cpp
+
+automata.o: automata.cpp automata.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o automata.o automata.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

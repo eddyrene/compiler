@@ -5,6 +5,8 @@ symbols_table::symbols_table()
     table= new my_hash;
     file_name="../compiler/resources/symbols_table.txt";
     this->read();
+    au = new automata();
+    au->fill_matriz();
 }
 
 /*
@@ -46,7 +48,7 @@ string symbols_table::get_token(string p)
     string rpta;
     auto it = table->find(p);
     if(it==table->end())
-        rpta=evaluar(p);
+        rpta=au->executar(p);// evalua el automata;
     else
         rpta=it->second;
     return rpta;
@@ -112,13 +114,15 @@ bool symbols_table::is_identifier( string cadena){
 
 
 string symbols_table::evaluar( string cadena ){
-    if( entero(cadena)){
+    /*if( entero(cadena)){
         return "entero";
     }
     if( is_identifier(cadena)){
         return "id";
     }
-    return "error-sin-tipo";
+    return "error-sin-tipo";*/
+
+    au->executar(cadena);
 }
 
 

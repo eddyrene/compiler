@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include "automata.h"
 
 
 using namespace std;
@@ -16,10 +17,12 @@ class symbols_table
 private:
     my_hash * table;
     string file_name;
+    automata * au;
 private:
     bool entero( string cadena );
     bool is_identifier( string cadena);
     string evaluar( string cadena );
+
 
 public:
     symbols_table();
