@@ -11,6 +11,7 @@ break keyword
 continue keyword
 return keyword
 goto keyword
+, coma
 ; semicolon
 ( bracket_open
 ) bracket_close

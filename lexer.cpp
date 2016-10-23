@@ -9,51 +9,81 @@ lexer::lexer(string source_code){
 
 
 void  lexer::tokenizer(string cad){
-    int cont=0,i=0,n=0;
-    string subcad;
+    buffer_tokens.clear();/*limpiar buffer de tokens*/
+    string buffer="";
     string cc="";
-    for(auto c:cad){
-        ++cont;
-        ++n;
-        if( int(c)==10 ){ i=cont; n=0; }/*control de salto de lineas*/
-        if( c==' ' || st.is(cc+c) ){
-            if(c==' '){
-                subcad = cad.substr(i,n-1);
-                if( !is_null_token(subcad) ){
-                    buffer_tokens.push_back( st.get_token(subcad) );
+    int len = cad.length();
+    for (int i = 0; i <= len; ++i) {
+        if(cad[i] ==' ' || i==len || st.is(cc+cad[i]) ){
+            if( st.is(cc+cad[i]) ){/*si // == <= >= + -*/
+                set_token_into_buffer( buffer );/*insertar en buffer*/
+                buffer="";
+                if( i<(len-1) ){ /*si == //acceder solo hasta el ultimo caracter*/
+                    if( !st.is(cc+cad[i-1]+cad[i]) && !st.is(cc+cad[i]+cad[i+1]) ){
+                       set_token_into_buffer(cc+cad[i]);/*insertar en buffer*/
+                    }
+                    /*simbolos unarios y dobles*/
+                    if( st.is(cc+cad[i]+cad[i+1])){
+                       if( (cad[i]=='/' &&  cad[i+1]=='/') || (cad[i]=='/' &&  cad[i+1]=='*') || (cad[i]=='*' &&  cad[i+1]=='/') ){
+                       }else{/*token de dos simbolos: ++ -- <= >= */
+                            set_token_into_buffer( cc+cad[i]+cad[i+1] );/*insertar en buffer*/
+                            i++;
+                       }
+                    }
+                    if( cad[i]=='/' && cad[i+1]=='/' ){/*comentarios de una linea*/
+                        while(true){
+                            if( int(cad[i])==10 ){
+                                break;
+                            }else{
+                                i++;
+                            }
+                        }
+                    }
+                    if( cad[i]=='/' && cad[i+1]=='*' ){/*comentarios grandes*/
+                        while(true){
+                            if( i<(len-1) && cad[i]=='*' && cad[i+1]=='/' ){/*aviso: quisa violacion de memoria*/
+                                i++;
+                                break;
+                            }else{
+                                i++;
+                            }
+                        }
+                    }
+                }else{
+                    set_token_into_buffer( cc+cad[i] );/*insertar en buffer*/
                 }
-                i=cont;
-                n=0;
+            }
+            else{ /* poner ne buffer de tokens */
+                set_token_into_buffer( buffer );/*insertar en buffer*/
+                buffer ="";
+            }
+
+        }else{/*altos de linea y llenado de buffer*/
+            if( int(cad[i])==10 || int(cad[i])==9 ){
+                set_token_into_buffer( buffer );/*insertar en buffer*/
+                buffer="";
             }
             else{
-                subcad = cad.substr(i,n-1);
-                if( !is_null_token(subcad) ){
-                    buffer_tokens.push_back( st.get_token(subcad) );
-                }
-                i=cont-1;
-
-                subcad = cad.substr(i,1);
-                if( !is_null_token(subcad) ){
-                    buffer_tokens.push_back( st.get_token(subcad) );
-                }
-                i=cont;
-                n=0;
+                buffer= buffer+cad[i];
             }
         }
     }
 }
 
+
+
+
 /*
- *intput: string
- * verifica si es un string vacio ( "" )
- * 1 vacio
- * 0 no vacio
- */
-bool lexer::is_null_token(string token){
+se inserta  token no vacio
+*/
+void lexer::set_token_into_buffer(string token){
     if( token == ""){
-        return true;
+        return;
     }
-    return false;
+    else{
+        cout<<"|"<<token<<"|"<<endl;
+        //buffer_tokens.push_back( st.get_token(token) );
+    }
 }
 
 
