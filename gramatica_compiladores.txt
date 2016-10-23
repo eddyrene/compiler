@@ -1,0 +1,45 @@
+%token INC include id OP float int void BOP COMP ID IDS EQ if else break
+%%
+
+COMP: '<'  |  '>' | '>=' | '<=' | '==';
+BOP: '||' | ' &&';
+EQ: '=' ;
+OP: '+' | '-' | '*' | '/' ;
+OPINC: '++' | '--' ;
+
+S: HE | FUN | HE FUN |  ;
+
+AFUN: FUN AFUN |  ; 
+HE:   INC | ST ; 
+INC:  include '<' LIB '>' ;
+LIB: id | id '/' id;
+
+ST: DT id ';' | DT id '=' EXP ';' | DT IDS ;
+IDS: id | id ',' IDS ;
+EXP: id | id OID | CLLFUN;
+OID: OP id | OP id OID;
+CLLFUN:   id '(' IDS ')' | id '(' ')' | id '(' EXP ')' ;
+DT: float | int | void;
+FUN: DT id '(' PID ')' '{' FST '}' ;
+PID: DT id | DT id ',' PID ;
+FST: ST | LOOP | CTRL | FST | ;
+LOOP: FOR | WHILE ;
+CTRL: IF | IF ELSE;
+IF: if '(' COND ')' '{' FST '}' | if '(' COND ')' ST; 
+ELSE:  else '{' FST '}' | else ST;
+COND: BCOMP | BCOMP BOP A | CLLFUN |  id |  '!' id ;
+A: BCOMP | BCOMP BOP A;
+BCOMP:  id COMP id;
+
+
+FOR: '(' FORPRE ';' LOOPCOND ';' LOOPINC ')' '{' FST '}' ;
+LOOPINC: id OPINC ';' | OPINC id ';' | id OP EQ id ';' | id EQ EXP |  ;
+
+
+FORPRE: ST |  ;
+LOOPCOND: BCOMP | ;
+
+WHILE: '(' COND ')'  '{' FST '}' ;
+LST: BR FST LST | ;
+BR: break; | RETURN ';'|  ;
+RETURN: return EXP| return ;
