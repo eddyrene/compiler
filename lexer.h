@@ -15,17 +15,15 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-#include <vector>
-#include <iostream>
+#include "utilities.h"
 #include "symbols_table.h"
-using namespace std;
 
 class lexer{
     private:
         symbols_table st;
         vector<string> buffer_tokens;
     private:
-        void set_token_into_buffer(string token);
+        void set_token_into_buffer(token _token);
 
     public:
         lexer();

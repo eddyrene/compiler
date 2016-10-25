@@ -2,11 +2,12 @@
 #define COMPILER_H
 
 #include "lexer.h"
+#include "parser.h"
 
 class compiler{
     private:
         lexer _lexer; /* contiene el bufer de tokens  */
-        //parser ..etc
+        parser _parser;
 
     private:
         string source_code;

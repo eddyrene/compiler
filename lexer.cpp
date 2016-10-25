@@ -76,13 +76,13 @@ void  lexer::tokenizer(string cad){
 /*
 se inserta  token no vacio
 */
-void lexer::set_token_into_buffer(string token){
-    if( token == ""){
+void lexer::set_token_into_buffer(token _token){
+    if( _token == ""){
         return;
     }
     else{
-        cout<<"|"<<token<<"|"<<endl;
-        //buffer_tokens.push_back( st.get_token(token) );
+        //cout<<"|"<<token<<"|"<<endl;
+        buffer_tokens.push_back( st.get_token(_token) );
     }
 }
 
@@ -93,7 +93,7 @@ void lexer::print_buffer_tokens(){
     }
 }
 
-vector<string> lexer::get_buffer_tokens(){
+vector<token> lexer::get_buffer_tokens(){
     return buffer_tokens;
 }
 

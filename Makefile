@@ -53,13 +53,15 @@ SOURCES       = main.cpp \
 		compiler.cpp \
 		lexer.cpp \
 		symbols_table.cpp \
-		automata.cpp moc_mainwindow.cpp
+		automata.cpp \
+		parser.cpp moc_mainwindow.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		compiler.o \
 		lexer.o \
 		symbols_table.o \
 		automata.o \
+		parser.o \
 		moc_mainwindow.o
 DIST          = resources/symbols_table.txt \
 		../../../Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
@@ -214,12 +216,15 @@ DIST          = resources/symbols_table.txt \
 		compiler.h \
 		lexer.h \
 		symbols_table.h \
-		automata.h main.cpp \
+		automata.h \
+		utilities.h \
+		parser.h main.cpp \
 		mainwindow.cpp \
 		compiler.cpp \
 		lexer.cpp \
 		symbols_table.cpp \
-		automata.cpp
+		automata.cpp \
+		parser.cpp
 QMAKE_TARGET  = compiler
 DESTDIR       = 
 TARGET        = compiler
@@ -550,8 +555,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h compiler.h lexer.h symbols_table.h automata.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp mainwindow.cpp compiler.cpp lexer.cpp symbols_table.cpp automata.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.h compiler.h lexer.h symbols_table.h automata.h utilities.h parser.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp mainwindow.cpp compiler.cpp lexer.cpp symbols_table.cpp automata.cpp parser.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
 
@@ -683,6 +688,7 @@ moc_mainwindow.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
 		compiler.h \
 		lexer.h \
+		utilities.h \
 		symbols_table.h \
 		automata.h \
 		mainwindow.h \
@@ -811,6 +817,7 @@ main.o: main.cpp mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
 		compiler.h \
 		lexer.h \
+		utilities.h \
 		symbols_table.h \
 		automata.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
@@ -925,6 +932,7 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
 		compiler.h \
 		lexer.h \
+		utilities.h \
 		symbols_table.h \
 		automata.h \
 		ui_mainwindow.h \
@@ -987,11 +995,13 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 
 compiler.o: compiler.cpp compiler.h \
 		lexer.h \
+		utilities.h \
 		symbols_table.h \
 		automata.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o compiler.o compiler.cpp
 
 lexer.o: lexer.cpp lexer.h \
+		utilities.h \
 		symbols_table.h \
 		automata.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o lexer.o lexer.cpp
@@ -1002,6 +1012,10 @@ symbols_table.o: symbols_table.cpp symbols_table.h \
 
 automata.o: automata.cpp automata.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o automata.o automata.cpp
+
+parser.o: parser.cpp parser.h \
+		utilities.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o parser.o parser.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

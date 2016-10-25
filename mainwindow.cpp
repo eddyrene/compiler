@@ -3,7 +3,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
     ui->setupUi(this);
-    ui->textEdit->setText("++++--");/*  */
+    ui->textEdit->setText("/* \n comentario \n*/ \n int i=0; //comentario");/*  */
 }
 
 MainWindow::~MainWindow(){

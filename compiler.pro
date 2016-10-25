@@ -16,13 +16,16 @@ SOURCES += main.cpp\
     compiler.cpp \
     lexer.cpp \
     symbols_table.cpp \
-    automata.cpp
+    automata.cpp \
+    parser.cpp
 
 HEADERS  += mainwindow.h \
     compiler.h \
     lexer.h \
     symbols_table.h \
-    automata.h
+    automata.h \
+    utilities.h \
+    parser.h
 
 FORMS    += mainwindow.ui
 
