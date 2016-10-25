@@ -24,7 +24,7 @@ void compiler::run(){
     _lexer.tokenizer(source_code);
     _lexer.print_buffer_tokens(); /*  */
     _parser.set_vector_tokens( _lexer.get_buffer_tokens() );
-
+    _parser.parse();
 
 
 

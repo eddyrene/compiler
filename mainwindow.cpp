@@ -3,7 +3,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
     ui->setupUi(this);
-    ui->textEdit->setText("/* \n comentario \n*/ \n int i=0; //comentario");/*  */
+    ui->textEdit->setText("/* \n S'->S \n S-> ID S Integer \n  S->coma  \n*/ \n //cadena: \n a b c , 10 20 30");/*  */
 }
 
 MainWindow::~MainWindow(){
