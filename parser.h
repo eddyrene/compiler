@@ -31,21 +31,21 @@ class parser{
 
         /*otras funciones */
         void print_s_token(){
-            cout<<"\ntokens de stack tokens"<<endl;
+            cout<<"\n------------tokens de stack tokens"<<endl;
             while( !s_token.empty() ){
                 cout<<s_token.top()<<endl;
                 s_token.pop();
             }
         }
         void print_s_state(){
-            cout<<"\ntokens de stack estados"<<endl;
+            cout<<"\n-----------tokens de stack estados"<<endl;
             while( !s_state.empty() ){
                 cout<<s_state.top()<<endl;
                 s_state.pop();
             }
         }
         void print_q_input_tokens(){
-            cout<<"\ntokens de entrada"<<endl;
+            cout<<"\n----------tokens de entrada"<<endl;
             while( !q_input_tokens.empty() ){
                 cout<<q_input_tokens.front()<<endl;
                 q_input_tokens.pop();
