@@ -1,0 +1,77 @@
+%token  include id  float int void if else break for while fe
+%start S
+%%
+
+COMP: '<'  |  '>' | '>=' | '<=' | '==';
+BOP: '||' | ' &&';
+EQ: '=' ;
+OP: '+' | '-' | '*' | '/' ;
+OPINC: '++' | '--' ;
+DT: float | int | void;
+
+S: HE VGLO FUN |  VGLO FUN | id ;
+FUN: DT id '(' PID ')' '{' FST '}' ; 
+VGLO: ST ;
+HE:  include '<' LIB '>' ;
+LIB: id LIB';
+LIB': '/' id |  ;
+
+ST: DT ST';
+ST': IDS ST'';	
+ST'': '=' EXP ';' |  ';' ;
+
+IDS : id IDS' ;
+IDS' :  | ',' IDS ; 
+
+PID: DT id PID1|  ;
+PID1: | ',' PID ;
+
+OID: OP id OID1 ;
+OID1:   | OID ;
+
+CLLFUN: id '(' CLLFUN' ;
+CLLFUN': IDS ')' |   ')' ;
+
+CLLFUNCOND: '(' CLLFUNCOND' ;
+CLLFUNCOND': IDS ')' |   ')' ;
+
+EXP: id EXP'' ; 
+EXP'': EXP' |  '(' CLLFUN' ;
+EXP':  | OID ;
+
+FST: ST FST' | LOOP FST' | CTRL FST' ;
+FST': ST FST' |  ;
+
+CTRL: IF CTRL' ;
+CTRL':     | ELSE;
+
+IF: if IF';
+IF': '(' IF''; 
+IF'' : COND ')' '{' LST '}'  | '(' COND ')' ST ;
+
+ELSE: else ELSE' ;
+ELSE': '{' LST '}' | ST ;
+
+FOR: for  '(' FORPRE ';' LOOPCOND ';' LOOPINC ')' '{' LST '}' ;
+WHILE:  while '(' COND ')'  '{' LST '}' ;
+
+LOOP: FOR | WHILE ;
+
+LOOPCOND: BCOMP | ;
+
+FORPRE: ST |  ;
+
+BCOMP:  id COMP id;
+
+LOOPINC: id LOOPINC' | OPINC id ';' |     ;
+LOOPINC': OPINC ';' | OP '=' id ';' | '=' EXP ;
+
+COND: id COND'' ;
+COND'' : COMP id COND' |  CLLFUNCOND |  ; 
+COND':     |  BOP A ; 
+A: BCOMP A' ;
+A': BCOMP  BOP A'  |      ;
+
+LST: BR FST LST | ;
+BR: break; | RETURN ';'|  ;
+RETURN: return EXP| return ;
