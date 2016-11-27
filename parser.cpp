@@ -627,33 +627,442 @@ S --> coma
 */
 void parser::fill_table_reduction(){
     vector<token> vt;
-    //r1
+    //1
     vt.push_back("S");
     t_reduction[1]=vt;
-    //r2
+    //2
     vt.clear();
-    vt.push_back("S");
-    vt.push_back("bracket_open");
-    vt.push_back("L");
-    vt.push_back("bracket_close");
+    vt.push_back("INI");
     t_reduction[2]=vt;
-    //r3
+    //3
     vt.clear();
-    vt.push_back("S");
-    vt.push_back("Id");
+    vt.push_back("IMPORTS");
+    vt.push_back("STS");
     t_reduction[3]=vt;
-    //r4
+    //4
     vt.clear();
-    vt.push_back("L");
-    vt.push_back("S");
+    vt.push_back("IMPORT");
+    vt.push_back("IMPORTS");
     t_reduction[4]=vt;
-    //r5
-    vt.clear();
-    vt.push_back("L");
-    vt.push_back("L");
-    vt.push_back("coma");
-    vt.push_back("S");
+    //5
+    vt.push_back("EPS");
     t_reduction[5]=vt;
+
+
+    //6
+    vt.clear();
+    vt.push_back("import");
+    vt.push_back("id");
+    vt.push_back("DIR");
+    t_reduction[6]=vt;
+    //7
+    vt.clear();
+    vt.push_back(".");
+    vt.push_back("LIB");
+    t_reduction[7]=vt;
+    //8
+    vt.clear();
+    vt.push_back(";");
+    t_reduction[8]=vt;
+    //9
+    vt.clear();
+    vt.push_back("id");
+    vt.push_back("DIR");
+    t_reduction[9]=vt;
+    //10
+    vt.clear();
+    vt.push_back("*");
+    vt.push_back(";");
+    t_reduction[10]=vt;
+
+
+
+    //11
+    vt.clear();
+    vt.push_back("ST");
+    vt.push_back("STS");
+    t_reduction[11]=vt;
+    //12
+    vt.clear();
+    vt.push_back("EPS");
+    t_reduction[12]=vt;
+    //13
+    vt.clear();
+    vt.push_back("DT");
+    vt.push_back("id");
+    vt.push_back("EXP_");
+    t_reduction[13]=vt;
+    //14
+    vt.clear();
+    vt.push_back("id");
+    vt.push_back("EXP_1");
+    t_reduction[14]=vt;
+    //15
+    vt.clear();
+    vt.push_back(";");
+    t_reduction[15]=vt;
+
+
+    //16
+    vt.clear();
+    vt.push_back("=");
+    vt.push_back("EXP");
+    vt.push_back(";");
+    t_reduction[16]=vt;
+    //17
+    vt.clear();
+    vt.push_back("FUN");
+    t_reduction[17]=vt;
+    //18
+    vt.clear();
+    vt.push_back("=");
+    vt.push_back("EXP");
+    vt.push_back(";");
+    t_reduction[18]=vt;
+    //19
+    vt.clear();
+    vt.push_back("(");
+    vt.push_back("PAR");
+    vt.push_back(")");
+    vt.push_back("{");
+    vt.push_back("STS_FUN");
+    vt.push_back("}");
+    t_reduction[19]=vt;
+    //20
+    vt.clear();
+    vt.push_back("ST_FUN");
+    vt.push_back("STS_FUN");
+    t_reduction[20]=vt;
+
+
+
+    //21
+    vt.clear();
+    vt.push_back("EPS");
+    t_reduction[21]=vt;
+    //22
+    vt.clear();
+    vt.push_back("DT");
+    vt.push_back("id");
+    vt.push_back("EXP_FUN");
+    t_reduction[22]=vt;
+    //23
+    vt.clear();
+    vt.push_back("id");
+    vt.push_back("EXP_FUN_1");
+    t_reduction[23]=vt;
+    //24
+    vt.clear();
+    vt.push_back("IF");
+    t_reduction[24]=vt;
+    //25
+    vt.clear();
+    vt.push_back("SWITCH");
+    t_reduction[25]=vt;
+
+
+    //26
+    vt.clear();
+    vt.push_back("WHILE");
+    t_reduction[26]=vt;
+    //27
+    vt.clear();
+    vt.push_back("FOR");
+    t_reduction[27]=vt;
+    //28
+    vt.clear();
+    vt.push_back(";");
+    t_reduction[28]=vt;
+    //29
+    vt.clear();
+    vt.push_back("=");
+    vt.push_back("EXP");
+    vt.push_back(";");
+    t_reduction[29]=vt;
+    //30
+    vt.clear();
+    vt.push_back("=");
+    vt.push_back("EXP");
+    vt.push_back(";");
+    t_reduction[30]=vt;
+
+
+    //31
+    vt.clear();
+    vt.push_back("DCLASS_FUN");
+    vt.push_back(";");
+    t_reduction[31]=vt;
+    //32
+    vt.clear();
+    vt.push_back("if");
+    vt.push_back("(");
+    vt.push_back("COND");
+    vt.push_back(")");
+    vt.push_back("{");
+    vt.push_back("STS_FUN");
+    vt.push_back("}");
+    vt.push_back("ELSE");
+    t_reduction[32]=vt;
+    //33
+    vt.clear();
+    vt.push_back("else");
+    vt.push_back("{");
+    vt.push_back("STS_FUN");
+    vt.push_back("}");
+    t_reduction[33]=vt;
+    //34
+    vt.clear();
+    vt.push_back("EPS");
+    t_reduction[34]=vt;
+    //35
+    vt.clear();
+    vt.push_back("switch");
+    vt.push_back("(");
+    vt.push_back("id");
+    vt.push_back(")");
+    vt.push_back("{");
+    vt.push_back("CASES");
+    vt.push_back("}");
+    t_reduction[35]=vt;
+
+
+
+
+    //36
+    vt.clear();
+    vt.push_back("CASE");
+    vt.push_back("CASES");
+    t_reduction[36]=vt;
+    //37
+    vt.clear();
+    vt.push_back("EPS");
+    t_reduction[37]=vt;
+    //38
+    vt.clear();
+    vt.push_back("case");
+    vt.push_back("DAT");
+    vt.push_back(":");
+    vt.push_back("EXP");
+    vt.push_back("ASIG");
+    vt.push_back(";");
+    vt.push_back("break");
+    vt.push_back(";");
+    t_reduction[38]=vt;
+    //39
+    vt.clear();
+    vt.push_back("=");
+    vt.push_back("EXP");
+    t_reduction[39]=vt;
+    //40
+    vt.clear();
+    vt.push_back("EPS");
+    t_reduction[40]=vt;
+
+
+
+
+    //41
+    vt.clear();
+    vt.push_back("while");
+    vt.push_back("(");
+    vt.push_back("COND");
+    vt.push_back(")");
+    vt.push_back("{");
+    vt.push_back("STS_FUN");
+    vt.push_back("}");
+    t_reduction[41]=vt;
+    //42
+    vt.clear();
+    vt.push_back("for");
+    vt.push_back("(");
+    vt.push_back("ST");
+    vt.push_back("COND");
+    vt.push_back(";");
+    vt.push_back("id");
+    vt.push_back("=");
+    vt.push_back("EXP");
+    vt.push_back(")");
+    vt.push_back("{");
+    vt.push_back("STS_FUN");
+    vt.push_back("}");
+    t_reduction[42]=vt;
+    //43
+    vt.clear();
+    vt.push_back("DAT");
+    vt.push_back("EXP1");
+    t_reduction[43]=vt;
+    //44
+    vt.clear();
+    vt.push_back("OP");
+    vt.push_back("EXP");
+    t_reduction[44]=vt;
+    //45
+    vt.clear();
+    vt.push_back("EPS");
+    t_reduction[45]=vt;
+
+
+
+    //46
+    vt.clear();
+    vt.push_back("DAT");
+    vt.push_back("OP_BOOL");
+    vt.push_back("DAT");
+    t_reduction[46]=vt;
+    //47
+    vt.clear();
+    vt.push_back("VAL");
+    t_reduction[47]=vt;
+    //48
+    vt.clear();
+    vt.push_back("id");
+    vt.push_back("DCLASS_FUN");
+    t_reduction[48]=vt;
+    //49
+    vt.clear();
+    vt.push_back("(");
+    vt.push_back("PARAM");
+    t_reduction[49]=vt;
+    //50
+    vt.clear();
+    vt.push_back(".");
+    vt.push_back("id");
+    vt.push_back("DCLASS");
+    t_reduction[50]=vt;
+
+
+
+    //51
+    vt.clear();
+    vt.push_back("EPS");
+    t_reduction[51]=vt;
+    //52
+    vt.clear();
+    vt.push_back("(");
+    vt.push_back("PARAM");
+    t_reduction[52]=vt;
+    //53
+    vt.clear();
+    vt.push_back("PAR_VAL");
+    vt.push_back(")");
+    t_reduction[53]=vt;
+    //54
+    vt.clear();
+    vt.push_back("DT");
+    vt.push_back("id");
+    vt.push_back("PAR1");
+    t_reduction[54]=vt;
+    //55
+    vt.clear();
+    vt.push_back("EPS");
+    t_reduction[55]=vt;
+
+
+    //56
+    vt.clear();
+    vt.push_back(",");
+    vt.push_back("PAR2");
+    t_reduction[56]=vt;
+    //57
+    vt.clear();
+    vt.push_back("EPS");
+    t_reduction[57]=vt;
+    //58
+    vt.clear();
+    vt.push_back("DT");
+    vt.push_back("id");
+    vt.push_back("PAR1");
+    t_reduction[58]=vt;
+    //59
+    vt.clear();
+    vt.push_back("DAT");
+    vt.push_back("PAR_VAL1");
+    t_reduction[59]=vt;
+    //60
+    vt.clear();
+    vt.push_back("EPS");
+    t_reduction[60]=vt;
+
+
+    //61
+    vt.clear();
+    vt.push_back(",");
+    vt.push_back("PAR_VAL2");
+    t_reduction[61]=vt;
+    //62
+    vt.clear();
+    vt.push_back("EPS");
+    t_reduction[62]=vt;
+    //63
+    vt.clear();
+    vt.push_back("DAT");
+    vt.push_back("PAR_VAL1");
+    t_reduction[63]=vt;
+    //64
+    vt.clear();
+    vt.push_back("void");
+    t_reduction[64]=vt;
+    //65
+    vt.clear();
+    vt.push_back("bool");
+    t_reduction[65]=vt;
+
+
+
+    //66
+    vt.clear();
+    vt.push_back("int");
+    t_reduction[66]=vt;
+    //67
+    vt.clear();
+    vt.push_back("char");
+    t_reduction[67]=vt;
+    //68
+    vt.clear();
+    vt.push_back("num");
+    t_reduction[68]=vt;
+    //69
+    vt.clear();
+    vt.push_back("caracter");
+    t_reduction[69]=vt;
+    //70
+    vt.clear();
+    vt.push_back("booleano");
+    t_reduction[70]=vt;
+
+
+    //71
+    vt.clear();
+    vt.push_back("+");
+    t_reduction[71]=vt;
+    //72
+    vt.clear();
+    vt.push_back("-");
+    t_reduction[72]=vt;
+    //73
+    vt.clear();
+    vt.push_back("<");
+    t_reduction[73]=vt;
+    //74
+    vt.clear();
+    vt.push_back(">");
+    t_reduction[74]=vt;
+    //75
+    vt.clear();
+    vt.push_back("==");
+    t_reduction[]=vt;
+
+
+
+    //76
+    vt.clear();
+    vt.push_back("!=");
+    t_reduction[76]=vt;
+
+
+
+
+
 }
 
 /* gramtica test 2
@@ -665,10 +1074,84 @@ void parser::fill_table_reduction(){
 
 
 
+gramatica ampliada vers1
 
-
-
-
+1)	S' --> S
+2)	S --> INI
+3)	INI --> IMPORTS  STS
+4)	IMPORTS --> IMPORT  IMPORTS
+5)	IMPORTS --> EPS
+6)	IMPORT --> import  id  DIR
+7)	DIR --> .  LIB
+8)	DIR --> ;
+9)	LIB --> id  DIR
+10)	LIB --> *  ;
+11)	STS --> ST  STS
+12)	STS --> EPS
+13)	ST --> DT  id  EXP_
+14)	ST --> id  EXP_1
+15)	EXP_ --> ;
+16)	EXP_ --> =  EXP  ;
+17)	EXP_ --> FUN
+18)	EXP_1 --> =  EXP  ;
+19)	FUN --> (  PAR  )  {  STS_FUN  }
+20)	STS_FUN --> ST_FUN  STS_FUN
+21)	STS_FUN --> EPS
+22)	ST_FUN --> DT  id  EXP_FUN
+23)	ST_FUN --> id  EXP_FUN_1
+24)	ST_FUN --> IF
+25)	ST_FUN --> SWITCH
+26)	ST_FUN --> WHILE
+27)	ST_FUN --> FOR
+28)	EXP_FUN --> ;
+29)	EXP_FUN --> =  EXP  ;
+30)	EXP_FUN_1 --> =  EXP  ;
+31)	EXP_FUN_1 --> DCLASS_FUN  ;
+32)	IF --> if  (  COND  )  {  STS_FUN  }  ELSE
+33)	ELSE --> else  {  STS_FUN  }
+34)	ELSE --> EPS
+35)	SWITCH --> switch  (  id  )  {  CASES  }
+36)	CASES --> CASE  CASES
+37)	CASES --> EPS
+38)	CASE --> case  DAT  :  EXP  ASIG  ;  break  ;
+39)	ASIG --> =  EXP
+40)	ASIG --> EPS
+41)	WHILE --> while  (  COND  )  {  STS_FUN  }
+42)	FOR --> for  (  ST  COND  ;  id  =  EXP  )  {  STS_FUN  }
+43)	EXP --> DAT  EXP1
+44)	EXP1 --> OP  EXP
+45)	EXP1 --> EPS
+46)	COND --> DAT  OP_BOOL  DAT
+47)	DAT --> VAL
+48)	DAT --> id  DCLASS_FUN
+49)	DCLASS_FUN --> (  PARAM
+50)	DCLASS_FUN --> .  id  DCLASS
+51)	DCLASS_FUN --> EPS
+52)	DCLASS --> (  PARAM
+53)	PARAM --> PAR_VAL  )
+54)	PAR --> DT  id  PAR1
+55)	PAR --> EPS
+56)	PAR1 --> ,  PAR2
+57)	PAR1 --> EPS
+58)	PAR2 --> DT  id  PAR1
+59)	PAR_VAL --> DAT  PAR_VAL1
+60)	PAR_VAL --> EPS
+61)	PAR_VAL1 --> ,  PAR_VAL2
+62)	PAR_VAL1 --> EPS
+63)	PAR_VAL2 --> DAT  PAR_VAL1
+64)	DT --> void
+65)	DT --> bool
+66)	DT --> int
+67)	DT --> char
+68)	VAL --> num
+69)	VAL --> caracter
+70)	VAL --> booleano
+71)	OP --> +
+72)	OP --> -
+73)	OP_BOOL --> <
+74)	OP_BOOL --> >
+75)	OP_BOOL --> ==
+76)	OP_BOOL --> !=
 */
 
 

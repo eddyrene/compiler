@@ -691,6 +691,7 @@ moc_mainwindow.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		utilities.h \
 		symbols_table.h \
 		automata.h \
+		parser.h \
 		mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/n/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/n/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/n/Documents/proyecto-compiladores/compiler -I/home/n/Qt5.7.0/5.7/gcc_64/include -I/home/n/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/n/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/n/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
@@ -820,6 +821,7 @@ main.o: main.cpp mainwindow.h \
 		utilities.h \
 		symbols_table.h \
 		automata.h \
+		parser.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
@@ -935,6 +937,7 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		utilities.h \
 		symbols_table.h \
 		automata.h \
+		parser.h \
 		ui_mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
@@ -997,7 +1000,8 @@ compiler.o: compiler.cpp compiler.h \
 		lexer.h \
 		utilities.h \
 		symbols_table.h \
-		automata.h
+		automata.h \
+		parser.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o compiler.o compiler.cpp
 
 lexer.o: lexer.cpp lexer.h \
