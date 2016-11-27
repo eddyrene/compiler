@@ -1,11 +1,11 @@
 %token  include id  float int void if else break
 %%
 
-COMP: '<'  |  '>' | '>=' | '<=' | '==';
-BOP: '||' | ' &&';
+COMP: '<'  |  '>' | '>' '=' | '<' '=' | '=' '=';
+BOP: '|' '|' | ' &' '&';
 EQ: '=' ;
 OP: '+' | '-' | '*' | '/' ;
-OPINC: '++' | '--' ;
+OPINC: '+' '+' | '-' '-' ;
 
 S: FUN | HE FUN ;
 
