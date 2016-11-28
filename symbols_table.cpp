@@ -43,8 +43,7 @@ my_hash* symbols_table::get_table()
     return table;
 }
 
-string symbols_table::get_token(string p)
-{
+string symbols_table::get_token(string p){
     string rpta;
     auto it = table->find(p);
     if(it==table->end())

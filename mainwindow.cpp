@@ -3,7 +3,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
     ui->setupUi(this);
-    ui->textEdit->setText("/* \n S'->S \n S-> ID S Integer \n  S->coma  \n*/ \n //cadena: \n (x,(x)) ");/*  */
+    ui->textEdit->setText("/* \n S'->S \n S-> ID S Integer \n  S->coma  \n*/ \n //cadena: \n char t='a'; ");/*  */
 }
 
 MainWindow::~MainWindow(){
