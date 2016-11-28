@@ -29,6 +29,8 @@ class parser{
         void add_on_parse_table(state s, token t, action a, state ss);
         void parse();
 
+
+
         /*otras funciones */
         void print_s_token(){
             cout<<"\n------------tokens de stack tokens"<<endl;
