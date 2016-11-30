@@ -10,7 +10,7 @@ automata::automata()
 
     f_names.push_back("-");
     f_names.push_back("id");
-    f_names.push_back("integer");
+    f_names.push_back("value");
     f_names.push_back("noterminal");
 }
 
@@ -57,7 +57,7 @@ string automata::executar(string a)
            int bb=int(a[1]);
            int cc=int(a[2]);
            if( aa==39 && aa==cc && a.length()==3  ){
-               return "caracter";
+               return "value";
            }
            return "token_desconocido";
         }
