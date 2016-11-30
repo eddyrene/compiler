@@ -289,7 +289,7 @@ void parser::fill_parser_table(){
     add_on_parse_table(70,"$",'r',8);
     add_on_parse_table(71,"id",'r',9);
     add_on_parse_table(71,"dt",'r',9);
-    add_on_parse_table(71,"imort",'r',9);
+    add_on_parse_table(71,"import",'r',9);
     add_on_parse_table(71,"$",'r',9);
     add_on_parse_table(72,"id",'d',68);
     add_on_parse_table(72,"value",'d',67);
@@ -891,7 +891,7 @@ void parser::fill_parser_table(){
     add_on_parse_table(303,"op",'r',63);
     add_on_parse_table(303,";",'r',63);
     add_on_parse_table(303,"=",'r',63);
-
+    ///////////////////////////////////////////////////////
     add_on_parse_table(0,"S",'m',1);
     add_on_parse_table(0,"IMPORTS",'m',2);
     add_on_parse_table(0,"IMPORT",'m',3);
@@ -941,7 +941,7 @@ void parser::fill_parser_table(){
     add_on_parse_table(72,"DAT",'m',66);
     add_on_parse_table(72,"PAR_VAL",'m',88);
     add_on_parse_table(74,"STS_FUN",'m',89);
-    add_on_parse_table(74,"STS_FUN",'m',90);
+    add_on_parse_table(74,"ST_FUN",'m',90);
     add_on_parse_table(74,"IF",'m',93);
     add_on_parse_table(74,"SWITCH",'m',94);
     add_on_parse_table(74,"WHILE",'m',95);
@@ -1025,8 +1025,8 @@ void parser::fill_parser_table(){
     add_on_parse_table(160,"COND",'m',185);
     add_on_parse_table(160,"DAT",'m',154);
     add_on_parse_table(162,"EXP_1",'m',188);
-    add_on_parse_table(170,"EXP",'m',75);
-    add_on_parse_table(170,"DAT",'m',76);
+    add_on_parse_table(170,"EXP",'m',65);
+    add_on_parse_table(170,"DAT",'m',66);
     add_on_parse_table(170,"PARAM",'m',191);
     add_on_parse_table(170,"PAR_VAL",'m',146);
     add_on_parse_table(172,"FUN_BODY",'m',192);

@@ -1,6 +1,7 @@
 #######tabla de simbolos
 #######word token
 import import
+new new
 if if
 else else
 for for

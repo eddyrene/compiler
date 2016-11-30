@@ -31,3 +31,6 @@ FORMS    += mainwindow.ui
 
 DISTFILES += \
     resources/symbols_table.txt
+
+OTHER_FILES += \
+    resources/symbols_table.txt
