@@ -26,6 +26,7 @@ void  lexer::tokenizer(string cad){
                     if( st.is(cc+cad[i]+cad[i+1])){
                        if( (cad[i]=='/' &&  cad[i+1]=='/') || (cad[i]=='/' &&  cad[i+1]=='*') || (cad[i]=='*' &&  cad[i+1]=='/') ){
                        }else{/*token de dos simbolos: ++ -- <= >= */
+                            cout<<"lol "<<cc+cad[i]+cad[i+1]  <<endl;
                             set_token_into_buffer( cc+cad[i]+cad[i+1] );/*insertar en buffer*/
                             i++;
                        }
@@ -53,7 +54,7 @@ void  lexer::tokenizer(string cad){
                     set_token_into_buffer( cc+cad[i] );/*insertar en buffer*/
                 }
             }
-            else{ /* poner ne buffer de tokens */
+            else{ /* poner en buffer de tokens */
                 set_token_into_buffer( buffer );/*insertar en buffer*/
                 buffer ="";
             }
