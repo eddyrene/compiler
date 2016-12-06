@@ -661,6 +661,7 @@ void parser::fill_parser_table(){
     add_on_parse_table(194,"id",'r',45);
     add_on_parse_table(194,"dt",'r',45);
     add_on_parse_table(194,"if",'r',45);
+    add_on_parse_table(194,"else",'r',45);
     add_on_parse_table(194,"switch",'r',45);
     add_on_parse_table(194,"while",'r',45);
     add_on_parse_table(194,"for",'r',45);
