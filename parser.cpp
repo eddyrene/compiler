@@ -27,6 +27,7 @@ void parser::parse(){
                 s_token.push( q_input_tokens.front() );
                 q_input_tokens.pop();
                 s_state.push(as.second);
+
             }
 
             if( as.first == 'r' ){// reduccion
@@ -42,7 +43,7 @@ void parser::parse(){
                     s_state.push(asss.second);
                     continue;
                 }
-                /***********/
+                //check_error(vt);
                 for (int i = vt.size()-1; i >0  ; --i) {
                     if( s_token.top() == vt[i] ){
                         s_token.pop();
@@ -52,6 +53,7 @@ void parser::parse(){
                         break;
                     }
                 }
+
                 s_token.push(vt[0]);//S
                 //rescatar ultimo estado
                 st = make_pair(s_state.top(), s_token.top() );
@@ -64,17 +66,33 @@ void parser::parse(){
             }
         }else{
             cout<<"error: cadena no aceptada "<<endl;
-            print_s_state();
-            print_s_token();
-            print_q_input_tokens();
+            //print_s_state();
+            //print_s_token();
+            //print_q_input_tokens();
             break;
 
         }
     }
 
 }
+/*
+void parser::check_error(v_token vt){
+    for (int i = vt.size()-1; i >0  ; --i) {
+        if( s_token.top() == vt[i] ){
+            see(s_token.top());
+            see(vt[i]);
+            s_token.pop();
+            s_state.pop();
+        }else{
+            cout<<"error: simbolo incorrecto"<< vt[i]<<endl;
+            s_token.pop();
+            s_state.pop();
+            break;
 
-
+        }
+    }
+}
+*/
 
 
 
