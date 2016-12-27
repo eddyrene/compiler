@@ -34,7 +34,7 @@ public:
     QHBoxLayout *horizontalLayout;
     QTextEdit *textEdit;
     QPushButton *pushButton;
-    QTextEdit *textEdit_2;
+    QLabel *label_arbol;
     QLabel *label;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
@@ -44,12 +44,13 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(673, 478);
+        MainWindow->resize(1004, 795);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
+        centralWidget->setEnabled(true);
         horizontalLayoutWidget = new QWidget(centralWidget);
         horizontalLayoutWidget->setObjectName(QStringLiteral("horizontalLayoutWidget"));
-        horizontalLayoutWidget->setGeometry(QRect(60, 20, 571, 391));
+        horizontalLayoutWidget->setGeometry(QRect(60, 20, 891, 691));
         horizontalLayout = new QHBoxLayout(horizontalLayoutWidget);
         horizontalLayout->setSpacing(6);
         horizontalLayout->setContentsMargins(11, 11, 11, 11);
@@ -65,10 +66,21 @@ public:
 
         horizontalLayout->addWidget(pushButton);
 
-        textEdit_2 = new QTextEdit(horizontalLayoutWidget);
-        textEdit_2->setObjectName(QStringLiteral("textEdit_2"));
+        label_arbol = new QLabel(horizontalLayoutWidget);
+        label_arbol->setObjectName(QStringLiteral("label_arbol"));
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(label_arbol->sizePolicy().hasHeightForWidth());
+        label_arbol->setSizePolicy(sizePolicy);
+        label_arbol->setMinimumSize(QSize(400, 0));
+        label_arbol->setMouseTracking(true);
+        label_arbol->setFrameShape(QFrame::Box);
+        label_arbol->setTextFormat(Qt::PlainText);
+        label_arbol->setScaledContents(true);
+        label_arbol->setOpenExternalLinks(true);
 
-        horizontalLayout->addWidget(textEdit_2);
+        horizontalLayout->addWidget(label_arbol);
 
         label = new QLabel(centralWidget);
         label->setObjectName(QStringLiteral("label"));
@@ -76,7 +88,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 673, 19));
+        menuBar->setGeometry(QRect(0, 0, 1004, 19));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -94,6 +106,7 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
         pushButton->setText(QApplication::translate("MainWindow", "run", 0));
+        label_arbol->setText(QApplication::translate("MainWindow", "TextLabel", 0));
         label->setText(QApplication::translate("MainWindow", "TextLabel", 0));
     } // retranslateUi
 

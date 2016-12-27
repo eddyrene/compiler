@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     lexer.cpp \
     symbols_table.cpp \
     automata.cpp \
-    parser.cpp
+    parser.cpp \
+    tree.cpp
 
 HEADERS  += mainwindow.h \
     compiler.h \
@@ -25,9 +26,13 @@ HEADERS  += mainwindow.h \
     symbols_table.h \
     automata.h \
     utilities.h \
-    parser.h
+    parser.h \
+    tree.h
 
 FORMS    += mainwindow.ui
 
 DISTFILES += \
+    resources/symbols_table.txt
+
+OTHER_FILES += \
     resources/symbols_table.txt

@@ -3,7 +3,7 @@
 symbols_table::symbols_table()
 {
     table= new my_hash;
-    file_name="../compiler/resources/symbols_table.txt";
+    file_name="/home/micaela/Desktop/Uicompi/compiler-master/resources/symbols_table.txt";
     this->read();
     au = new automata();
     au->fill_matriz();
@@ -43,8 +43,7 @@ my_hash* symbols_table::get_table()
     return table;
 }
 
-string symbols_table::get_token(string p)
-{
+string symbols_table::get_token(string p){
     string rpta;
     auto it = table->find(p);
     if(it==table->end())

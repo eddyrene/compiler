@@ -1,6 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 #include "utilities.h"
+#include "tree.h"
 
 typedef char action;
 typedef pair<state,token> state_token;
@@ -21,6 +22,8 @@ class parser{
 
         /*tabla de reduccion*/
         map< state ,v_token > t_reduction;
+        /*errores*/
+        vector<string> errors;
     public:
         parser();
         void set_vector_tokens( vector<token> v_token);
@@ -28,6 +31,10 @@ class parser{
         void fill_table_reduction();
         void add_on_parse_table(state s, token t, action a, state ss);
         void parse();
+        void check_error(v_token vt);
+
+
+
 
         /*otras funciones */
         void print_s_token(){

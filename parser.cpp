@@ -14,12 +14,9 @@ void parser::parse(){
     state_token st;
     action_state as;
     v_token vt;
-/*
-    print_s_state();
-    print_s_token();
-    print_q_input_tokens();
 
-    */
+    tree *tree_= new tree();
+    node *root;
     while( true ){
         st = make_pair( s_state.top(), q_input_tokens.front() );
         as =parser_table[st];
@@ -28,23 +25,63 @@ void parser::parse(){
                 s_token.push( q_input_tokens.front() );
                 q_input_tokens.pop();
                 s_state.push(as.second);
+
             }
             if( as.first == 'r' ){// reduccion
                 vt= t_reduction[as.second];
-                for (int i = vt.size()-1; i >0  ; --i) {
-                    if( s_token.top() == vt[i] ){
-                        s_token.pop();
-                        s_state.pop();
-                    }else{
-                        cout<<"error: reduccion "<<endl;
-                        break;
+                /* tratamiento de vacios*/
+                node *node_p= new node(vt[0]);
+                if(vt[1]=="EPS"){
+                    /*nuevo nodo(agregar a buffer) -> EPS*/
+                    node *node_= new node("EPS");
+                    node_p->add_branch(node_);
+                    tree_->s_buffer.push(node_p);
+                    /*------*/
+
+                    //cout<<"E: "<< vt[0]<<" --> EPS"<<endl;/*tree*/
+                    s_token.push( vt[0] );
+                    //rescatar ultimo estado
+                    st = make_pair(s_state.top(), s_token.top() );
+                    action_state asss = parser_table[st];
+                    s_state.push(asss.second);
+                    continue;
+                }else{
+                    int vt_size=vt.size();
+                    for (int i = vt_size-1; i >0  ; --i) {
+                        if( s_token.top() == vt[i] ){
+                            /**/
+                            if(tree_->is_terminal_token( vt[i] ) ){
+                                node *node_= new node(vt[i]);
+                                node_p->add_branch( node_ );
+                                cout<<"branch: "<<node_p->label<<" -> "<<node_->label<<endl;
+                            }else{
+                                cout<<"actual node: "<<tree_->s_buffer.top()->label<<endl;
+                                node_p->add_branch( tree_->s_buffer.top() );
+                                tree_->s_buffer.pop();
+                            }
+                            /**/
+                            s_token.pop();
+                            s_state.pop();
+                        }else{
+                            cout<<"error: reduccion "<<endl;
+                            break;
+                        }
                     }
+                    /*tree padre*/
+                     //tree_->set_on_buffer(vt[0],node_p);
+                     tree_->s_buffer.push(node_p);
+
+                     if(node_p->label == "S"){
+                         root = node_p;
+                     }
+                    /**/
+
+                    s_token.push(vt[0]);//S
+                    //rescatar ultimo estado
+                    st = make_pair(s_state.top(), s_token.top() );
+                    action_state ass = parser_table[st];
+                    s_state.push(ass.second);
                 }
-                s_token.push(vt[0]);//S
-                //rescatar ultimo estado
-                st = make_pair(s_state.top(), s_token.top() );
-                action_state ass = parser_table[st];
-                s_state.push(ass.second);
             }
             if( as.first == 'a' ){// aceptacion
                 cout<<"cadena aceptada"<<endl;
@@ -52,17 +89,33 @@ void parser::parse(){
             }
         }else{
             cout<<"error: cadena no aceptada "<<endl;
-            print_s_state();
-            print_s_token();
-            print_q_input_tokens();
+            /* print_s_state(); print_s_token(); print_q_input_tokens();  */
             break;
 
         }
     }
-
+    /*print root*/
+    tree_->set_root(root);
+    tree_->print_tree_dot();
 }
+/*
+void parser::check_error(v_token vt){
+    for (int i = vt.size()-1; i >0  ; --i) {
+        if( s_token.top() == vt[i] ){
+            see(s_token.top());
+            see(vt[i]);
+            s_token.pop();
+            s_state.pop();
+        }else{
+            cout<<"error: simbolo incorrecto"<< vt[i]<<endl;
+            s_token.pop();
+            s_state.pop();
+            break;
 
-
+        }
+    }
+}
+*/
 
 
 
@@ -98,7 +151,6 @@ void parser::add_on_parse_table(state s, token t, action a, state ss){
 /*
 estado,token, accion, estado
 0 "a" -> 'd' 3 (d3)
-
 d desplazamiento
 r reducir
 m mover...
@@ -106,639 +158,1491 @@ a aceptar
 */
 void parser::fill_parser_table(){
 
+    //TABLA FINAL .. .
 
-    add_on_parse_table(0,"void",'r',5);
-    add_on_parse_table(0,"bool",'r',5);
-    add_on_parse_table(0,"int",'r',5);
-    add_on_parse_table(0,"char",'r',5);
-    add_on_parse_table(0,"id",'r',5);
-    add_on_parse_table(0,"import",'d',5);
-
-
-    add_on_parse_table(3,"void",'d',10);
-    add_on_parse_table(3,"bool",'d',11);
-    add_on_parse_table(3,"int",'d',12);
-    add_on_parse_table(3,"char",'d',13);
-    add_on_parse_table(3,"id",'d',9);
-
-
-    add_on_parse_table(4,"void",'r',5);
-    add_on_parse_table(4,"bool",'r',5);
-    add_on_parse_table(4,"int",'r',5);
-    add_on_parse_table(4,"char",'r',5);
-    add_on_parse_table(4,"id",'r',5);
-    add_on_parse_table(4,"import",'d',5);
-
-    add_on_parse_table(5,"import",'d',15);
-
-    add_on_parse_table(3,"void",'d',10);
-    add_on_parse_table(3,"bool",'d',11);
-    add_on_parse_table(3,"int",'d',12);
-    add_on_parse_table(3,"char",'d',13);
-    add_on_parse_table(3,"id",'d',9);
-
-    add_on_parse_table(7,"void",'r',5);
-    add_on_parse_table(7,"bool",'r',5);
-    add_on_parse_table(7,"int",'r',5);
-    add_on_parse_table(7,"char",'r',5);
-    add_on_parse_table(7,"id",'r',5);
-
-    add_on_parse_table(8,"import",'d',17);
-
-    add_on_parse_table(10,"import",'r',64);
-    add_on_parse_table(11,"import",'r',65);
-    add_on_parse_table(12,"import",'r',66);
-    add_on_parse_table(13,"import",'r',67);
-
-    add_on_parse_table(14,"void",'r',4);
-    add_on_parse_table(14,"bool",'r',4);
-    add_on_parse_table(14,"int",'r',4);
-    add_on_parse_table(14,"char",'r',4);
-    add_on_parse_table(14,"id",'r',4);
-
-    add_on_parse_table(18,"void",'r',14);
-    add_on_parse_table(18,"bool",'r',14);
-    add_on_parse_table(18,"int",'r',14);
-    add_on_parse_table(18,"char",'r',14);
-    add_on_parse_table(18,"id",'r',14);
-    add_on_parse_table(18,"num",'r',14);
-    add_on_parse_table(18,"character",'r',14);
-    add_on_parse_table(18,"booleano",'r',14);
-
-
-    add_on_parse_table(19,"id",'d',31);
-    add_on_parse_table(19,"num",'d',32);
-    add_on_parse_table(19,"character",'d',33);
-    add_on_parse_table(19,"booleano",'d',34);
-
-    add_on_parse_table(20,"void",'r',6);
-    add_on_parse_table(20,"bool",'r',6);
-    add_on_parse_table(20,"int",'r',6);
-    add_on_parse_table(20,"char",'r',6);
-    add_on_parse_table(20,"id",'r',6);
-    add_on_parse_table(20,"import",'r',6);
-|
-    add_on_parse_table(21,"id",'d',36);
-
-    add_on_parse_table(22,"void",'r',8);
-    add_on_parse_table(22,"bool",'r',8);
-    add_on_parse_table(22,"int",'r',8);
-    add_on_parse_table(22,"char",'r',8);
-    add_on_parse_table(22,"id",'r',8);
-
-    add_on_parse_table(22,"import",'r',8);
-
-    add_on_parse_table(23,"void",'r',13);
-    add_on_parse_table(23,"bool",'r',13);
-    add_on_parse_table(23,"int",'r',13);
-    add_on_parse_table(23,"char",'r',13);
-    add_on_parse_table(23,"id",'r',13);
-    add_on_parse_table(23,"num",'r',13);
-    add_on_parse_table(23,"character",'r',13);
-    add_on_parse_table(23,"booleano",'r',13);
-
-    add_on_parse_table(23,"void",'r',15);
-    add_on_parse_table(24,"bool",'r',15);
-    add_on_parse_table(24,"int",'r',15);
-    add_on_parse_table(24,"char",'r',15);
+    add_on_parse_table(0,"id",'r',4);
+    add_on_parse_table(0,"dt",'r',4);
+    add_on_parse_table(0,"import",'d',4);
+    add_on_parse_table(0,"$",'r',4);
+    add_on_parse_table(1,"$",'a',-1);
+    add_on_parse_table(2,"id",'d',8);
+    add_on_parse_table(2,"dt",'d',7);
+    add_on_parse_table(2,"$",'r',11);
+    add_on_parse_table(3,"id",'r',4);
+    add_on_parse_table(3,"dt",'r',4);
+    add_on_parse_table(3,"import",'d',11);
+    add_on_parse_table(3,"$",'r',4);
+    add_on_parse_table(4,"id",'d',12);
+    add_on_parse_table(5,"$",'r',2);
+    add_on_parse_table(6,"id",'d',8);
+    add_on_parse_table(6,"dt",'d',7);
+    add_on_parse_table(6,"$",'r',11);
+    add_on_parse_table(7,"id",'d',14);
+    add_on_parse_table(8,"=",'d',16);
+    add_on_parse_table(9,"id",'r',3);
+    add_on_parse_table(9,"dt",'r',3);
+    add_on_parse_table(9,"$",'r',3);
+    add_on_parse_table(10,"id",'r',4);
+    add_on_parse_table(10,"dt",'r',4);
+    add_on_parse_table(10,"import",'d',4);
+    add_on_parse_table(10,"$",'r',4);
+    add_on_parse_table(11,"id",'d',18);
+    add_on_parse_table(12,".",'d',20);
+    add_on_parse_table(12,";",'d',21);
+    add_on_parse_table(13,"$",'r',10);
+    add_on_parse_table(14,";",'d',23);
+    add_on_parse_table(14,"=",'d',26);
+    add_on_parse_table(14,"(",'d',27);
+    add_on_parse_table(15,"id",'r',13);
+    add_on_parse_table(15,"dt",'r',13);
+    add_on_parse_table(15,"$",'r',13);
+    add_on_parse_table(16,"id",'d',33);
+    add_on_parse_table(16,"value",'d',32);
+    add_on_parse_table(16,"new",'d',30);
+    add_on_parse_table(17,"id",'r',3);
+    add_on_parse_table(17,"dt",'r',3);
+    add_on_parse_table(17,"$",'r',3);
+    add_on_parse_table(18,".",'d',35);
+    add_on_parse_table(18,";",'d',36);
+    add_on_parse_table(19,"id",'r',5);
+    add_on_parse_table(19,"dt",'r',5);
+    add_on_parse_table(19,"import",'r',5);
+    add_on_parse_table(19,"$",'r',5);
+    add_on_parse_table(20,"id",'d',38);
+    add_on_parse_table(20,"*",'d',39);
+    add_on_parse_table(21,"id",'r',7);
+    add_on_parse_table(21,"dt",'r',7);
+    add_on_parse_table(21,"import",'r',7);
+    add_on_parse_table(21,"$",'r',7);
+    add_on_parse_table(22,"id",'r',12);
+    add_on_parse_table(22,"dt",'r',12);
+    add_on_parse_table(22,"$",'r',12);
+    add_on_parse_table(23,"id",'r',14);
+    add_on_parse_table(23,"dt",'r',14);
+    add_on_parse_table(23,"$",'r',14);
     add_on_parse_table(24,"id",'r',15);
-    add_on_parse_table(24,"num",'r',15);
-    add_on_parse_table(24,"character",'r',15);
-    add_on_parse_table(24,"booleano",'r',15);
-
-
-    add_on_parse_table(25,"id",'r',31);
-    add_on_parse_table(25,"num",'r',32);
-    add_on_parse_table(25,"character",'r',33);
-    add_on_parse_table(25,"booleano",'r',34);
-
-
-    add_on_parse_table(26,"void",'r',17);
-    add_on_parse_table(26,"bool",'r',17);
-    add_on_parse_table(26,"int",'r',17);
-    add_on_parse_table(26,"char",'r',17);
-    add_on_parse_table(26,"id",'r',17);
-    add_on_parse_table(26,"num",'r',17);
-    add_on_parse_table(26,"character",'r',17);
-    add_on_parse_table(26,"booleano",'r',17);
-
-    add_on_parse_table(27,"void",'d',10);
-    add_on_parse_table(27,"bool",'d',11);
-    add_on_parse_table(27,"int",'d',12);
-    add_on_parse_table(27,"char",'d',13);
-
-    add_on_parse_table(29,"void",'r',45);
-    add_on_parse_table(29,"bool",'r',45);
-    add_on_parse_table(29,"int",'r',45);
-    add_on_parse_table(29,"char",'r',45);
-    add_on_parse_table(29,"id",'r',45);
-    add_on_parse_table(29,"num",'r',45);
-    add_on_parse_table(29,"character",'r',45);
-    add_on_parse_table(29,"booleano",'r',45);
-
-    add_on_parse_table(35,"void",'r',7);
-    add_on_parse_table(35,"bool",'r',7);
-    add_on_parse_table(35,"int",'r',7);
-    add_on_parse_table(35,"char",'r',7);
-    add_on_parse_table(35,"id",'r',7);
-    add_on_parse_table(35,"import",'r',7);
-
+    add_on_parse_table(24,"dt",'r',15);
+    add_on_parse_table(24,"$",'r',15);
+    add_on_parse_table(25,"id",'r',16);
+    add_on_parse_table(25,"dt",'r',16);
+    add_on_parse_table(25,"$",'r',16);
+    add_on_parse_table(26,"id",'d',33);
+    add_on_parse_table(26,"value",'d',32);
+    add_on_parse_table(26,"new",'d',42);
+    add_on_parse_table(27,"dt",'d',44);
+    add_on_parse_table(27,")",'r',66);
+    add_on_parse_table(28,"id",'r',17);
+    add_on_parse_table(28,"dt",'r',17);
+    add_on_parse_table(28,"$",'r',17);
+    add_on_parse_table(29,";",'d',45);
+    add_on_parse_table(30,"id",'d',46);
+    add_on_parse_table(31,"op",'d',48);
+    add_on_parse_table(31,";",'r',51);
+    add_on_parse_table(32,"op",'r',58);
+    add_on_parse_table(32,";",'r',58);
+    add_on_parse_table(33,"op",'r',62);
+    add_on_parse_table(33,".",'d',51);
+    add_on_parse_table(33,";",'r',62);
+    add_on_parse_table(33,"(",'d',50);
+    add_on_parse_table(34,"id",'r',5);
+    add_on_parse_table(34,"dt",'r',5);
+    add_on_parse_table(34,"import",'r',5);
+    add_on_parse_table(34,"$",'r',5);
     add_on_parse_table(35,"id",'d',53);
+    add_on_parse_table(35,"*",'d',54);
+    add_on_parse_table(36,"id",'r',7);
+    add_on_parse_table(36,"dt",'r',7);
+    add_on_parse_table(36,"import",'r',7);
+    add_on_parse_table(36,"$",'r',7);
+    add_on_parse_table(37,"id",'r',6);
+    add_on_parse_table(37,"dt",'r',6);
+    add_on_parse_table(37,"import",'r',6);
+    add_on_parse_table(37,"$",'r',6);
+    add_on_parse_table(38,".",'d',20);
+    add_on_parse_table(38,";",'d',21);
+    add_on_parse_table(39,";",'d',56);
+    add_on_parse_table(40,"id",'r',17);
+    add_on_parse_table(40,"dt",'r',17);
+    add_on_parse_table(40,"$",'r',17);
+    add_on_parse_table(41,";",'d',57);
+    add_on_parse_table(42,"id",'d',58);
+    add_on_parse_table(43,")",'d',59);
+    add_on_parse_table(44,"id",'d',60);
+    add_on_parse_table(45,"id",'r',18);
+    add_on_parse_table(45,"dt",'r',18);
+    add_on_parse_table(45,"$",'r',18);
+    add_on_parse_table(46,"(",'d',61);
+    add_on_parse_table(47,";",'r',49);
+    add_on_parse_table(48,"id",'d',33);
+    add_on_parse_table(48,"value",'d',32);
+    add_on_parse_table(49,"op",'r',59);
+    add_on_parse_table(49,";",'r',59);
+    add_on_parse_table(50,"id",'d',68);
+    add_on_parse_table(50,"value",'d',67);
+    add_on_parse_table(50,")",'r',71);
+    add_on_parse_table(51,"id",'d',69);
+    add_on_parse_table(52,"id",'r',6);
+    add_on_parse_table(52,"dt",'r',6);
+    add_on_parse_table(52,"import",'r',6);
+    add_on_parse_table(52,"$",'r',6);
+    add_on_parse_table(53,".",'d',35);
+    add_on_parse_table(53,";",'d',36);
+    add_on_parse_table(54,";",'d',71);
+    add_on_parse_table(55,"id",'r',8);
+    add_on_parse_table(55,"dt",'r',8);
+    add_on_parse_table(55,"import",'r',8);
+    add_on_parse_table(55,"$",'r',8);
+    add_on_parse_table(56,"id",'r',9);
+    add_on_parse_table(56,"dt",'r',9);
+    add_on_parse_table(56,"import",'r',9);
+    add_on_parse_table(56,"$",'r',9);
+    add_on_parse_table(57,"id",'r',18);
+    add_on_parse_table(57,"dt",'r',18);
+    add_on_parse_table(57,"$",'r',18);
+    add_on_parse_table(58,"(",'d',72);
+    add_on_parse_table(59,"{",'d',74);
+    add_on_parse_table(60,")",'r',68);
+    add_on_parse_table(60,",",'d',76);
+    add_on_parse_table(61,"id",'d',68);
+    add_on_parse_table(61,"value",'d',67);
+    add_on_parse_table(61,")",'r',71);
+    add_on_parse_table(62,";",'r',50);
+    add_on_parse_table(63,"op",'r',60);
+    add_on_parse_table(63,";",'r',60);
+    add_on_parse_table(64,")",'d',78);
+    add_on_parse_table(65,")",'r',73);
+    add_on_parse_table(65,",",'d',80);
+    add_on_parse_table(66,"op",'d',82);
+    add_on_parse_table(66,")",'r',51);
+    add_on_parse_table(66,",",'r',51);
+    add_on_parse_table(67,"op",'r',58);
+    add_on_parse_table(67,")",'r',58);
+    add_on_parse_table(67,",",'r',58);
+    add_on_parse_table(68,"op",'r',62);
+    add_on_parse_table(68,".",'d',85);
+    add_on_parse_table(68,"(",'d',84);
+    add_on_parse_table(68,")",'r',62);
+    add_on_parse_table(68,",",'r',62);
+    add_on_parse_table(69,"(",'d',87);
+    add_on_parse_table(70,"id",'r',8);
+    add_on_parse_table(70,"dt",'r',8);
+    add_on_parse_table(70,"import",'r',8);
+    add_on_parse_table(70,"$",'r',8);
+    add_on_parse_table(71,"id",'r',9);
+    add_on_parse_table(71,"dt",'r',9);
+    add_on_parse_table(71,"import",'r',9);
+    add_on_parse_table(71,"$",'r',9);
+    add_on_parse_table(72,"id",'d',68);
+    add_on_parse_table(72,"value",'d',67);
+    add_on_parse_table(72,")",'r',71);
+    add_on_parse_table(73,"id",'r',20);
+    add_on_parse_table(73,"dt",'r',20);
+    add_on_parse_table(73,"$",'r',20);
+    add_on_parse_table(74,"id",'d',92);
+    add_on_parse_table(74,"dt",'d',91);
+    add_on_parse_table(74,"if",'d',98);
+    add_on_parse_table(74,"switch",'d',99);
+    add_on_parse_table(74,"while",'d',100);
+    add_on_parse_table(74,"for",'d',101);
+    add_on_parse_table(74,"return",'d',102);
+    add_on_parse_table(74,"}",'r',22);
+    add_on_parse_table(75,")",'r',65);
+    add_on_parse_table(76,"dt",'d',104);
+    add_on_parse_table(77,")",'d',105);
+    add_on_parse_table(78,"op",'r',64);
+    add_on_parse_table(78,";",'r',64);
+    add_on_parse_table(79,")",'r',70);
+    add_on_parse_table(80,"id",'d',68);
+    add_on_parse_table(80,"value",'d',67);
+    add_on_parse_table(81,")",'r',49);
+    add_on_parse_table(81,",",'r',49);
+    add_on_parse_table(82,"id",'d',68);
+    add_on_parse_table(82,"value",'d',67);
+    add_on_parse_table(83,"op",'r',59);
+    add_on_parse_table(83,")",'r',59);
+    add_on_parse_table(83,",",'r',59);
+    add_on_parse_table(84,"id",'d',68);
+    add_on_parse_table(84,"value",'d',67);
+    add_on_parse_table(84,")",'r',71);
+    add_on_parse_table(85,"id",'d',111);
+    add_on_parse_table(86,"op",'r',61);
+    add_on_parse_table(86,";",'r',61);
+    add_on_parse_table(87,"id",'d',68);
+    add_on_parse_table(87,"value",'d',67);
+    add_on_parse_table(87,")",'r',71);
+    add_on_parse_table(88,")",'d',113);
+    add_on_parse_table(89,"}",'d',114);
+    add_on_parse_table(90,"id",'d',92);
+    add_on_parse_table(90,"dt",'d',91);
+    add_on_parse_table(90,"if",'d',98);
+    add_on_parse_table(90,"switch",'d',99);
+    add_on_parse_table(90,"while",'d',100);
+    add_on_parse_table(90,"for",'d',101);
+    add_on_parse_table(90,"return",'d',102);
+    add_on_parse_table(90,"}",'r',22);
+    add_on_parse_table(91,"id",'d',116);
+    add_on_parse_table(92,".",'d',122);
+    add_on_parse_table(92,";",'r',62);
+    add_on_parse_table(92,"=",'d',120);
+    add_on_parse_table(92,"(",'d',121);
+    add_on_parse_table(93,"id",'r',25);
+    add_on_parse_table(93,"dt",'r',25);
+    add_on_parse_table(93,"if",'r',25);
+    add_on_parse_table(93,"switch",'r',25);
+    add_on_parse_table(93,"while",'r',25);
+    add_on_parse_table(93,"for",'r',25);
+    add_on_parse_table(93,"return",'r',25);
+    add_on_parse_table(93,"}",'r',25);
+    add_on_parse_table(94,"id",'r',26);
+    add_on_parse_table(94,"dt",'r',26);
+    add_on_parse_table(94,"if",'r',26);
+    add_on_parse_table(94,"switch",'r',26);
+    add_on_parse_table(94,"while",'r',26);
+    add_on_parse_table(94,"for",'r',26);
+    add_on_parse_table(94,"return",'r',26);
+    add_on_parse_table(94,"}",'r',26);
+    add_on_parse_table(95,"id",'r',27);
+    add_on_parse_table(95,"dt",'r',27);
+    add_on_parse_table(95,"if",'r',27);
+    add_on_parse_table(95,"switch",'r',27);
+    add_on_parse_table(95,"while",'r',27);
+    add_on_parse_table(95,"for",'r',27);
+    add_on_parse_table(95,"return",'r',27);
+    add_on_parse_table(95,"}",'r',27);
+    add_on_parse_table(96,"id",'r',28);
+    add_on_parse_table(96,"dt",'r',28);
+    add_on_parse_table(96,"if",'r',28);
+    add_on_parse_table(96,"switch",'r',28);
+    add_on_parse_table(96,"while",'r',28);
+    add_on_parse_table(96,"for",'r',28);
+    add_on_parse_table(96,"return",'r',28);
+    add_on_parse_table(96,"}",'r',28);
+    add_on_parse_table(97,"id",'r',29);
+    add_on_parse_table(97,"dt",'r',29);
+    add_on_parse_table(97,"if",'r',29);
+    add_on_parse_table(97,"switch",'r',29);
+    add_on_parse_table(97,"while",'r',29);
+    add_on_parse_table(97,"for",'r',29);
+    add_on_parse_table(97,"return",'r',29);
+    add_on_parse_table(97,"}",'r',29);
+    add_on_parse_table(98,"(",'d',124);
+    add_on_parse_table(99,"(",'d',125);
+    add_on_parse_table(100,"(",'d',124);
+    add_on_parse_table(101,"(",'d',127);
+    add_on_parse_table(102,"id",'d',33);
+    add_on_parse_table(102,"value",'d',32);
+    add_on_parse_table(102,";",'d',129);
+    add_on_parse_table(103,")",'r',67);
+    add_on_parse_table(104,"id",'d',131);
+    add_on_parse_table(105,";",'d',132);
+    add_on_parse_table(106,")",'r',72);
+    add_on_parse_table(107,")",'r',73);
+    add_on_parse_table(107,",",'d',80);
+    add_on_parse_table(108,")",'r',50);
+    add_on_parse_table(108,",",'r',50);
+    add_on_parse_table(109,"op",'r',60);
+    add_on_parse_table(109,")",'r',60);
+    add_on_parse_table(109,",",'r',60);
+    add_on_parse_table(110,")",'d',134);
+    add_on_parse_table(111,"(",'d',136);
+    add_on_parse_table(112,"op",'r',63);
+    add_on_parse_table(112,";",'r',63);
+    add_on_parse_table(113,";",'d',137);
+    add_on_parse_table(114,"id",'r',45);
+    add_on_parse_table(114,"dt",'r',45);
+    add_on_parse_table(114,"$",'r',45);
+    add_on_parse_table(115,"}",'r',21);
+    add_on_parse_table(116,";",'d',139);
+    add_on_parse_table(116,"=",'d',120);
+    add_on_parse_table(117,"id",'r',24);
+    add_on_parse_table(117,"dt",'r',24);
+    add_on_parse_table(117,"if",'r',24);
+    add_on_parse_table(117,"switch",'r',24);
+    add_on_parse_table(117,"while",'r',24);
+    add_on_parse_table(117,"for",'r',24);
+    add_on_parse_table(117,"return",'r',24);
+    add_on_parse_table(117,"}",'r',24);
+    add_on_parse_table(118,"id",'r',32);
+    add_on_parse_table(118,"dt",'r',32);
+    add_on_parse_table(118,"if",'r',32);
+    add_on_parse_table(118,"switch",'r',32);
+    add_on_parse_table(118,"while",'r',32);
+    add_on_parse_table(118,"for",'r',32);
+    add_on_parse_table(118,"return",'r',32);
+    add_on_parse_table(118,"}",'r',32);
+    add_on_parse_table(119,";",'d',141);
+    add_on_parse_table(120,"id",'d',33);
+    add_on_parse_table(120,"value",'d',32);
+    add_on_parse_table(120,"new",'d',144);
+    add_on_parse_table(121,"id",'d',68);
+    add_on_parse_table(121,"value",'d',67);
+    add_on_parse_table(121,")",'r',71);
+    add_on_parse_table(122,"id",'d',147);
+    add_on_parse_table(123,"{",'d',149);
+    add_on_parse_table(124,"id",'d',156);
+    add_on_parse_table(124,"value",'d',155);
+    add_on_parse_table(124,"(",'d',152);
+    add_on_parse_table(125,"id",'d',157);
+    add_on_parse_table(126,"{",'d',159);
+    add_on_parse_table(127,"id",'d',162);
+    add_on_parse_table(127,"dt",'d',161);
+    add_on_parse_table(128,"id",'r',46);
+    add_on_parse_table(128,"dt",'r',46);
+    add_on_parse_table(128,"if",'r',46);
+    add_on_parse_table(128,"switch",'r',46);
+    add_on_parse_table(128,"while",'r',46);
+    add_on_parse_table(128,"for",'r',46);
+    add_on_parse_table(128,"return",'r',46);
+    add_on_parse_table(128,"}",'r',46);
+    add_on_parse_table(129,"id",'r',47);
+    add_on_parse_table(129,"dt",'r',47);
+    add_on_parse_table(129,"if",'r',47);
+    add_on_parse_table(129,"switch",'r',47);
+    add_on_parse_table(129,"while",'r',47);
+    add_on_parse_table(129,"for",'r',47);
+    add_on_parse_table(129,"return",'r',47);
+    add_on_parse_table(129,"}",'r',47);
+    add_on_parse_table(130,";",'d',163);
+    add_on_parse_table(131,")",'r',68);
+    add_on_parse_table(131,",",'d',76);
+    add_on_parse_table(132,"id",'r',19);
+    add_on_parse_table(132,"dt",'r',19);
+    add_on_parse_table(132,"$",'r',19);
+    add_on_parse_table(133,")",'r',74);
+    add_on_parse_table(134,"op",'r',64);
+    add_on_parse_table(134,")",'r',64);
+    add_on_parse_table(134,",",'r',64);
+    add_on_parse_table(135,"op",'r',61);
+    add_on_parse_table(135,")",'r',61);
+    add_on_parse_table(135,",",'r',61);
+    add_on_parse_table(136,"id",'d',68);
+    add_on_parse_table(136,"value",'d',67);
+    add_on_parse_table(136,")",'r',71);
+    add_on_parse_table(137,"id",'r',19);
+    add_on_parse_table(137,"dt",'r',19);
+    add_on_parse_table(137,"$",'r',19);
+    add_on_parse_table(138,"id",'r',23);
+    add_on_parse_table(138,"dt",'r',23);
+    add_on_parse_table(138,"if",'r',23);
+    add_on_parse_table(138,"switch",'r',23);
+    add_on_parse_table(138,"while",'r',23);
+    add_on_parse_table(138,"for",'r',23);
+    add_on_parse_table(138,"return",'r',23);
+    add_on_parse_table(138,"}",'r',23);
+    add_on_parse_table(139,"id",'r',30);
+    add_on_parse_table(139,"dt",'r',30);
+    add_on_parse_table(139,"if",'r',30);
+    add_on_parse_table(139,"switch",'r',30);
+    add_on_parse_table(139,"while",'r',30);
+    add_on_parse_table(139,"for",'r',30);
+    add_on_parse_table(139,"return",'r',30);
+    add_on_parse_table(139,"}",'r',30);
+    add_on_parse_table(140,"id",'r',31);
+    add_on_parse_table(140,"dt",'r',31);
+    add_on_parse_table(140,"if",'r',31);
+    add_on_parse_table(140,"switch",'r',31);
+    add_on_parse_table(140,"while",'r',31);
+    add_on_parse_table(140,"for",'r',31);
+    add_on_parse_table(140,"return",'r',31);
+    add_on_parse_table(140,"}",'r',31);
+    add_on_parse_table(141,"id",'r',33);
+    add_on_parse_table(141,"dt",'r',33);
+    add_on_parse_table(141,"if",'r',33);
+    add_on_parse_table(141,"switch",'r',33);
+    add_on_parse_table(141,"while",'r',33);
+    add_on_parse_table(141,"for",'r',33);
+    add_on_parse_table(141,"return",'r',33);
+    add_on_parse_table(141,"}",'r',33);
+    add_on_parse_table(142,"id",'r',17);
+    add_on_parse_table(142,"dt",'r',17);
+    add_on_parse_table(142,"if",'r',17);
+    add_on_parse_table(142,"switch",'r',17);
+    add_on_parse_table(142,"while",'r',17);
+    add_on_parse_table(142,"for",'r',17);
+    add_on_parse_table(142,"return",'r',17);
+    add_on_parse_table(142,"}",'r',17);
+    add_on_parse_table(143,";",'d',166);
+    add_on_parse_table(144,"id",'d',167);
+    add_on_parse_table(145,";",'r',60);
+    add_on_parse_table(146,")",'d',168);
+    add_on_parse_table(147,"(",'d',170);
+    add_on_parse_table(148,"id",'r',36);
+    add_on_parse_table(148,"dt",'r',36);
+    add_on_parse_table(148,"if",'r',36);
+    add_on_parse_table(148,"else",'d',172);
+    add_on_parse_table(148,"switch",'r',36);
+    add_on_parse_table(148,"while",'r',36);
+    add_on_parse_table(148,"for",'r',36);
+    add_on_parse_table(148,"return",'r',36);
+    add_on_parse_table(148,"}",'r',36);
+    add_on_parse_table(149,"id",'d',92);
+    add_on_parse_table(149,"dt",'d',91);
+    add_on_parse_table(149,"if",'d',98);
+    add_on_parse_table(149,"switch",'d',99);
+    add_on_parse_table(149,"while",'d',100);
+    add_on_parse_table(149,"for",'d',101);
+    add_on_parse_table(149,"return",'d',102);
+    add_on_parse_table(149,"}",'r',22);
+    add_on_parse_table(150,"{",'r',52);
+    add_on_parse_table(151,")",'d',174);
+    add_on_parse_table(152,"id",'d',156);
+    add_on_parse_table(152,"value",'d',155);
+    add_on_parse_table(153,"op_bool",'d',177);
+    add_on_parse_table(154,"op",'d',179);
+    add_on_parse_table(154,"op_bool",'r',51);
+    add_on_parse_table(155,"op",'r',58);
+    add_on_parse_table(155,"op_bool",'r',58);
+    add_on_parse_table(156,"op",'r',62);
+    add_on_parse_table(156,"op_bool",'r',62);
+    add_on_parse_table(156,".",'d',182);
+    add_on_parse_table(156,"(",'d',181);
+    add_on_parse_table(157,")",'d',183);
+    add_on_parse_table(158,"id",'r',43);
+    add_on_parse_table(158,"dt",'r',43);
+    add_on_parse_table(158,"if",'r',43);
+    add_on_parse_table(158,"switch",'r',43);
+    add_on_parse_table(158,"while",'r',43);
+    add_on_parse_table(158,"for",'r',43);
+    add_on_parse_table(158,"return",'r',43);
+    add_on_parse_table(158,"}",'r',43);
+    add_on_parse_table(159,"id",'d',92);
+    add_on_parse_table(159,"dt",'d',91);
+    add_on_parse_table(159,"if",'d',98);
+    add_on_parse_table(159,"switch",'d',99);
+    add_on_parse_table(159,"while",'d',100);
+    add_on_parse_table(159,"for",'d',101);
+    add_on_parse_table(159,"return",'d',102);
+    add_on_parse_table(159,"}",'r',22);
+    add_on_parse_table(160,"id",'d',156);
+    add_on_parse_table(160,"value",'d',155);
+    add_on_parse_table(161,"id",'d',187);
+    add_on_parse_table(162,"=",'d',189);
+    add_on_parse_table(163,"id",'r',48);
+    add_on_parse_table(163,"dt",'r',48);
+    add_on_parse_table(163,"if",'r',48);
+    add_on_parse_table(163,"switch",'r',48);
+    add_on_parse_table(163,"while",'r',48);
+    add_on_parse_table(163,"for",'r',48);
+    add_on_parse_table(163,"return",'r',48);
+    add_on_parse_table(163,"}",'r',48);
+    add_on_parse_table(164,")",'r',69);
+    add_on_parse_table(165,"op",'r',63);
+    add_on_parse_table(165,")",'r',63);
+    add_on_parse_table(165,",",'r',63);
+    add_on_parse_table(166,"id",'r',18);
+    add_on_parse_table(166,"dt",'r',18);
+    add_on_parse_table(166,"if",'r',18);
+    add_on_parse_table(166,"switch",'r',18);
+    add_on_parse_table(166,"while",'r',18);
+    add_on_parse_table(166,"for",'r',18);
+    add_on_parse_table(166,"return",'r',18);
+    add_on_parse_table(166,"}",'r',18);
+    add_on_parse_table(167,"(",'d',190);
+    add_on_parse_table(168,";",'r',64);
+    add_on_parse_table(169,";",'r',61);
+    add_on_parse_table(170,"id",'d',68);
+    add_on_parse_table(170,"value",'d',67);
+    add_on_parse_table(170,")",'r',71);
+    add_on_parse_table(171,"id",'r',34);
+    add_on_parse_table(171,"dt",'r',34);
+    add_on_parse_table(171,"if",'r',34);
+    add_on_parse_table(171,"switch",'r',34);
+    add_on_parse_table(171,"while",'r',34);
+    add_on_parse_table(171,"for",'r',34);
+    add_on_parse_table(171,"return",'r',34);
+    add_on_parse_table(171,"}",'r',34);
+    add_on_parse_table(172,"{",'d',193);
+    add_on_parse_table(173,"}",'d',194);
+    add_on_parse_table(174,"{",'r',53);
+    add_on_parse_table(175,"{",'r',54);
+    add_on_parse_table(176,")",'d',195);
+    add_on_parse_table(177,"id",'d',199);
+    add_on_parse_table(177,"value",'d',198);
+    add_on_parse_table(178,"op_bool",'r',49);
+    add_on_parse_table(179,"id",'d',156);
+    add_on_parse_table(179,"value",'d',155);
+    add_on_parse_table(180,"op",'r',59);
+    add_on_parse_table(180,"op_bool",'r',59);
+    add_on_parse_table(181,"id",'d',68);
+    add_on_parse_table(181,"value",'d',67);
+    add_on_parse_table(181,")",'r',71);
+    add_on_parse_table(182,"id",'d',203);
+    add_on_parse_table(183,"{",'d',204);
+    add_on_parse_table(184,"}",'d',205);
+    add_on_parse_table(185,";",'d',206);
+    add_on_parse_table(186,"op_bool",'d',207);
+    add_on_parse_table(187,";",'d',209);
+    add_on_parse_table(187,"=",'d',189);
+    add_on_parse_table(187,"(",'d',212);
+    add_on_parse_table(188,"id",'r',13);
+    add_on_parse_table(188,"value",'r',13);
+    add_on_parse_table(189,"id",'d',33);
+    add_on_parse_table(189,"value",'d',32);
+    add_on_parse_table(189,"new",'d',215);
+    add_on_parse_table(190,"id",'d',68);
+    add_on_parse_table(190,"value",'d',67);
+    add_on_parse_table(190,")",'r',71);
+    add_on_parse_table(191,";",'r',63);
+    add_on_parse_table(192,"id",'r',35);
+    add_on_parse_table(192,"dt",'r',35);
+    add_on_parse_table(192,"if",'r',35);
+    add_on_parse_table(192,"switch",'r',35);
+    add_on_parse_table(192,"while",'r',35);
+    add_on_parse_table(192,"for",'r',35);
+    add_on_parse_table(192,"return",'r',35);
+    add_on_parse_table(192,"}",'r',35);
+    add_on_parse_table(193,"id",'d',92);
+    add_on_parse_table(193,"dt",'d',91);
+    add_on_parse_table(193,"if",'d',98);
+    add_on_parse_table(193,"switch",'d',99);
+    add_on_parse_table(193,"while",'d',100);
+    add_on_parse_table(193,"for",'d',101);
+    add_on_parse_table(193,"return",'d',102);
+    add_on_parse_table(193,"}",'r',22);
+    add_on_parse_table(194,"id",'r',45);
+    add_on_parse_table(194,"dt",'r',45);
+    add_on_parse_table(194,"if",'r',45);
+    add_on_parse_table(194,"else",'r',45);
+    add_on_parse_table(194,"switch",'r',45);
+    add_on_parse_table(194,"while",'r',45);
+    add_on_parse_table(194,"for",'r',45);
+    add_on_parse_table(194,"return",'r',45);
+    add_on_parse_table(194,"}",'r',45);
+    add_on_parse_table(195,"op_bool",'d',218);
+    add_on_parse_table(196,")",'r',57);
+    add_on_parse_table(197,"op",'d',220);
+    add_on_parse_table(197,")",'r',51);
+    add_on_parse_table(198,"op",'r',58);
+    add_on_parse_table(198,")",'r',58);
+    add_on_parse_table(199,"op",'r',62);
+    add_on_parse_table(199,".",'d',223);
+    add_on_parse_table(199,"(",'d',222);
+    add_on_parse_table(199,")",'r',62);
+    add_on_parse_table(200,"op_bool",'r',50);
+    add_on_parse_table(201,"op",'r',60);
+    add_on_parse_table(201,"op_bool",'r',60);
+    add_on_parse_table(202,")",'d',224);
+    add_on_parse_table(203,"(",'d',226);
+    add_on_parse_table(204,"case",'d',229);
+    add_on_parse_table(204,"}",'r',39);
+    add_on_parse_table(205,"id",'r',45);
+    add_on_parse_table(205,"dt",'r',45);
+    add_on_parse_table(205,"if",'r',45);
+    add_on_parse_table(205,"switch",'r',45);
+    add_on_parse_table(205,"while",'r',45);
+    add_on_parse_table(205,"for",'r',45);
+    add_on_parse_table(205,"return",'r',45);
+    add_on_parse_table(205,"}",'r',45);
+    add_on_parse_table(206,"id",'d',230);
+    add_on_parse_table(207,"id",'d',33);
+    add_on_parse_table(207,"value",'d',32);
+    add_on_parse_table(208,"id",'r',12);
+    add_on_parse_table(208,"value",'r',12);
+    add_on_parse_table(209,"id",'r',14);
+    add_on_parse_table(209,"value",'r',14);
+    add_on_parse_table(210,"id",'r',15);
+    add_on_parse_table(210,"value",'r',15);
+    add_on_parse_table(211,"id",'r',16);
+    add_on_parse_table(211,"value",'r',16);
+    add_on_parse_table(212,"dt",'d',44);
+    add_on_parse_table(212,")",'r',66);
+    add_on_parse_table(213,"id",'r',17);
+    add_on_parse_table(213,"value",'r',17);
+    add_on_parse_table(214,";",'d',233);
+    add_on_parse_table(215,"id",'d',234);
+    add_on_parse_table(216,")",'d',235);
+    add_on_parse_table(217,"}",'d',236);
+    add_on_parse_table(218,"(",'d',237);
+    add_on_parse_table(219,")",'r',49);
+    add_on_parse_table(220,"id",'d',119);
+    add_on_parse_table(220,"value",'d',198);
+    add_on_parse_table(221,"op",'r',59);
+    add_on_parse_table(221,")",'r',59);
+    add_on_parse_table(222,"id",'d',68);
+    add_on_parse_table(222,"value",'d',67);
+    add_on_parse_table(222,")",'r',71);
+    add_on_parse_table(223,"id",'d',241);
+    add_on_parse_table(224,"op",'r',64);
+    add_on_parse_table(224,"op_bool",'r',64);
+    add_on_parse_table(225,"op",'r',61);
+    add_on_parse_table(225,"op_bool",'r',61);
+    add_on_parse_table(226,"id",'d',68);
+    add_on_parse_table(226,"value",'d',67);
+    add_on_parse_table(226,")",'r',71);
+    add_on_parse_table(227,"}",'d',243);
+    add_on_parse_table(228,"case",'d',229);
+    add_on_parse_table(228,"}",'r',39);
+    add_on_parse_table(229,"id",'d',247);
+    add_on_parse_table(229,"value",'d',246);
+    add_on_parse_table(230,"=",'d',248);
+    add_on_parse_table(231,";",'r',57);
+    add_on_parse_table(232,")",'d',249);
+    add_on_parse_table(233,"id",'r',18);
+    add_on_parse_table(233,"value",'r',18);
+    add_on_parse_table(234,"(",'d',250);
+    add_on_parse_table(235,";",'d',251);
+    add_on_parse_table(236,"id",'r',45);
+    add_on_parse_table(236,"dt",'r',45);
+    add_on_parse_table(236,"if",'r',45);
+    add_on_parse_table(236,"switch",'r',45);
+    add_on_parse_table(236,"while",'r',45);
+    add_on_parse_table(236,"for",'r',45);
+    add_on_parse_table(236,"return",'r',45);
+    add_on_parse_table(236,"}",'r',45);
+    add_on_parse_table(237,"id",'d',156);
+    add_on_parse_table(237,"value",'d',155);
+    add_on_parse_table(238,")",'r',50);
+    add_on_parse_table(239,"op",'r',60);
+    add_on_parse_table(239,")",'r',60);
+    add_on_parse_table(240,")",'d',254);
+    add_on_parse_table(241,"(",'d',256);
+    add_on_parse_table(242,"op",'r',63);
+    add_on_parse_table(242,"op_bool",'r',63);
+    add_on_parse_table(243,"id",'r',37);
+    add_on_parse_table(243,"dt",'r',37);
+    add_on_parse_table(243,"if",'r',37);
+    add_on_parse_table(243,"switch",'r',37);
+    add_on_parse_table(243,"while",'r',37);
+    add_on_parse_table(243,"for",'r',37);
+    add_on_parse_table(243,"return",'r',37);
+    add_on_parse_table(243,"}",'r',37);
+    add_on_parse_table(244,"}",'r',38);
+    add_on_parse_table(245,":",'d',257);
+    add_on_parse_table(246,":",'r',58);
+    add_on_parse_table(247,".",'d',260);
+    add_on_parse_table(247,"(",'d',259);
+    add_on_parse_table(247,":",'r',62);
+    add_on_parse_table(248,"id",'d',199);
+    add_on_parse_table(248,"value",'d',198);
+    add_on_parse_table(249,"{",'d',263);
+    add_on_parse_table(250,"id",'d',68);
+    add_on_parse_table(250,"value",'d',67);
+    add_on_parse_table(250,")",'r',71);
+    add_on_parse_table(251,"id",'r',19);
+    add_on_parse_table(251,"dt",'r',19);
+    add_on_parse_table(251,"if",'r',19);
+    add_on_parse_table(251,"switch",'r',19);
+    add_on_parse_table(251,"while",'r',19);
+    add_on_parse_table(251,"for",'r',19);
+    add_on_parse_table(251,"return",'r',19);
+    add_on_parse_table(251,"}",'r',19);
+    add_on_parse_table(252,"{",'r',55);
+    add_on_parse_table(253,")",'d',265);
+    add_on_parse_table(254,"op",'r',64);
+    add_on_parse_table(254,")",'r',64);
+    add_on_parse_table(255,"op",'r',61);
+    add_on_parse_table(255,")",'r',61);
+    add_on_parse_table(256,"id",'d',68);
+    add_on_parse_table(256,"value",'d',67);
+    add_on_parse_table(256,")",'r',71);
+    add_on_parse_table(257,"id",'d',270);
+    add_on_parse_table(257,"value",'d',269);
+    add_on_parse_table(258,":",'r',59);
+    add_on_parse_table(259,"id",'d',68);
+    add_on_parse_table(259,"value",'d',67);
+    add_on_parse_table(259,")",'r',71);
+    add_on_parse_table(260,"id",'d',273);
+    add_on_parse_table(261,")",'d',274);
+    add_on_parse_table(262,"id",'r',20);
+    add_on_parse_table(262,"value",'r',20);
+    add_on_parse_table(263,"id",'d',92);
+    add_on_parse_table(263,"dt",'d',91);
+    add_on_parse_table(263,"if",'d',98);
+    add_on_parse_table(263,"switch",'d',99);
+    add_on_parse_table(263,"while",'d',100);
+    add_on_parse_table(263,"for",'d',101);
+    add_on_parse_table(263,"return",'d',102);
+    add_on_parse_table(263,"}",'r',22);
+    add_on_parse_table(264,")",'d',276);
+    add_on_parse_table(265,")",'d',277);
+    add_on_parse_table(266,"op",'r',63);
+    add_on_parse_table(266,")",'r',63);
+    add_on_parse_table(267,";",'r',42);
+    add_on_parse_table(267,"=",'d',279);
+    add_on_parse_table(268,"op",'d',281);
+    add_on_parse_table(268,";",'r',51);
+    add_on_parse_table(268,"=",'r',51);
+    add_on_parse_table(269,"op",'r',58);
+    add_on_parse_table(269,";",'r',58);
+    add_on_parse_table(269,"=",'r',58);
+    add_on_parse_table(270,"op",'r',62);
+    add_on_parse_table(270,".",'d',284);
+    add_on_parse_table(270,";",'r',62);
+    add_on_parse_table(270,"=",'r',62);
+    add_on_parse_table(270,"(",'d',283);
+    add_on_parse_table(271,":",'r',60);
+    add_on_parse_table(272,")",'d',285);
+    add_on_parse_table(273,"(",'d',287);
+    add_on_parse_table(274,"{",'d',159);
+    add_on_parse_table(275,"}",'d',289);
+    add_on_parse_table(276,";",'d',290);
+    add_on_parse_table(277,"{",'r',56);
+    add_on_parse_table(278,";",'d',291);
+    add_on_parse_table(279,"id",'d',33);
+    add_on_parse_table(279,"value",'d',32);
+    add_on_parse_table(280,";",'r',49);
+    add_on_parse_table(280,"=",'r',49);
+    add_on_parse_table(281,"id",'d',270);
+    add_on_parse_table(281,"value",'d',269);
+    add_on_parse_table(282,"op",'r',59);
+    add_on_parse_table(282,";",'r',59);
+    add_on_parse_table(282,"=",'r',59);
+    add_on_parse_table(283,"id",'d',68);
+    add_on_parse_table(283,"value",'d',67);
+    add_on_parse_table(283,")",'r',71);
+    add_on_parse_table(284,"id",'d',296);
+    add_on_parse_table(285,":",'r',64);
+    add_on_parse_table(286,":",'r',61);
+    add_on_parse_table(287,"id",'d',68);
+    add_on_parse_table(287,"value",'d',67);
+    add_on_parse_table(287,")",'r',71);
+    add_on_parse_table(288,"id",'r',44);
+    add_on_parse_table(288,"dt",'r',44);
+    add_on_parse_table(288,"if",'r',44);
+    add_on_parse_table(288,"switch",'r',44);
+    add_on_parse_table(288,"while",'r',44);
+    add_on_parse_table(288,"for",'r',44);
+    add_on_parse_table(288,"return",'r',44);
+    add_on_parse_table(288,"}",'r',44);
+    add_on_parse_table(289,"id",'r',45);
+    add_on_parse_table(289,"value",'r',45);
+    add_on_parse_table(290,"id",'r',19);
+    add_on_parse_table(290,"value",'r',19);
+    add_on_parse_table(291,"break",'d',298);
+    add_on_parse_table(292,";",'r',41);
+    add_on_parse_table(293,";",'r',50);
+    add_on_parse_table(293,"=",'r',50);
+    add_on_parse_table(294,"op",'r',60);
+    add_on_parse_table(294,";",'r',60);
+    add_on_parse_table(294,"=",'r',60);
+    add_on_parse_table(295,")",'d',299);
+    add_on_parse_table(296,"(",'d',301);
+    add_on_parse_table(297,":",'r',63);
+    add_on_parse_table(298,";",'d',302);
+    add_on_parse_table(299,"op",'r',64);
+    add_on_parse_table(299,";",'r',64);
+    add_on_parse_table(299,"=",'r',64);
+    add_on_parse_table(300,"op",'r',61);
+    add_on_parse_table(300,";",'r',61);
+    add_on_parse_table(300,"=",'r',61);
+    add_on_parse_table(301,"id",'d',68);
+    add_on_parse_table(301,"value",'d',67);
+    add_on_parse_table(301,")",'r',71);
+    add_on_parse_table(302,"case",'r',40);
+    add_on_parse_table(302,"}",'r',40);
+    add_on_parse_table(303,"op",'r',63);
+    add_on_parse_table(303,";",'r',63);
+    add_on_parse_table(303,"=",'r',63);
+    ///////////////////////////////////////////////////////
+    add_on_parse_table(0,"S",'m',1);
+    add_on_parse_table(0,"IMPORTS",'m',2);
+    add_on_parse_table(0,"IMPORT",'m',3);
+    add_on_parse_table(2,"STS",'m',5);
+    add_on_parse_table(2,"ST",'m',6);
+    add_on_parse_table(3,"IMPORTS",'m',9);
+    add_on_parse_table(3,"IMPORT",'m',10);
+    add_on_parse_table(6,"STS",'m',13);
+    add_on_parse_table(6,"ST",'m',6);
+    add_on_parse_table(8,"EXP_1",'m',15);
+    add_on_parse_table(10,"IMPORTS",'m',17);
+    add_on_parse_table(10,"IMPORT",'m',3);
+    add_on_parse_table(12,"DIR",'m',19);
+    add_on_parse_table(14,"EXP_",'m',22);
+    add_on_parse_table(14,"EXP_1",'m',24);
+    add_on_parse_table(14,"FUN",'m',25);
+    add_on_parse_table(16,"EXP_2",'m',28);
+    add_on_parse_table(16,"EXP",'m',29);
+    add_on_parse_table(16,"DAT",'m',31);
+    add_on_parse_table(18,"DIR",'m',34);
+    add_on_parse_table(20,"LIB",'m',37);
+    add_on_parse_table(26,"EXP_2",'m',40);
+    add_on_parse_table(26,"EXP",'m',41);
+    add_on_parse_table(26,"DAT",'m',31);
+    add_on_parse_table(27,"PAR",'m',43);
+    add_on_parse_table(31,"EXP1",'m',47);
+    add_on_parse_table(33,"DCLASS_FUN",'m',49);
+    add_on_parse_table(35,"LIB",'m',52);
+    add_on_parse_table(38,"DIR",'m',55);
+    add_on_parse_table(48,"EXP",'m',62);
+    add_on_parse_table(48,"DAT",'m',31);
+    add_on_parse_table(50,"EXP",'m',65);
+    add_on_parse_table(50,"DAT",'m',66);
+    add_on_parse_table(50,"PARAM",'m',63);
+    add_on_parse_table(50,"PAR_VAL",'m',64);
+    add_on_parse_table(53,"DIR",'m',70);
+    add_on_parse_table(59,"FUN_BODY",'m',73);
+    add_on_parse_table(60,"PAR1",'m',75);
+    add_on_parse_table(61,"EXP",'m',65);
+    add_on_parse_table(61,"DAT",'m',66);
+    add_on_parse_table(61,"PAR_VAL",'m',77);
+    add_on_parse_table(65,"PAR_VAL1",'m',79);
+    add_on_parse_table(66,"EXP1",'m',81);
+    add_on_parse_table(68,"DCLASS_FUN",'m',83);
+    add_on_parse_table(69,"DCLASS",'m',86);
+    add_on_parse_table(72,"EXP",'m',65);
+    add_on_parse_table(72,"DAT",'m',66);
+    add_on_parse_table(72,"PAR_VAL",'m',88);
+    add_on_parse_table(74,"STS_FUN",'m',89);
+    add_on_parse_table(74,"ST_FUN",'m',90);
+    add_on_parse_table(74,"IF",'m',93);
+    add_on_parse_table(74,"SWITCH",'m',94);
+    add_on_parse_table(74,"WHILE",'m',95);
+    add_on_parse_table(74,"FOR",'m',96);
+    add_on_parse_table(74,"RETURN",'m',97);
+    add_on_parse_table(76,"PAR2",'m',103);
+    add_on_parse_table(80,"EXP",'m',107);
+    add_on_parse_table(80,"DAT",'m',66);
+    add_on_parse_table(80,"PAR_VAL2",'m',106);
+    add_on_parse_table(82,"EXP",'m',108);
+    add_on_parse_table(82,"DAT",'m',66);
+    add_on_parse_table(84,"EXP",'m',65);
+    add_on_parse_table(84,"DAT",'m',66);
+    add_on_parse_table(84,"PARAM",'m',109);
+    add_on_parse_table(84,"PAR_VAL",'m',110);
+    add_on_parse_table(87,"EXP",'m',65);
+    add_on_parse_table(87,"DAT",'m',66);
+    add_on_parse_table(87,"PARAM",'m',112);
+    add_on_parse_table(87,"PAR_VAL",'m',64);
+    add_on_parse_table(90,"STS_FUN",'m',115);
+    add_on_parse_table(90,"ST_FUN",'m',90);
+    add_on_parse_table(90,"IF",'m',93);
+    add_on_parse_table(90,"SWITCH",'m',94);
+    add_on_parse_table(90,"WHILE",'m',95);
+    add_on_parse_table(90,"FOR",'m',96);
+    add_on_parse_table(90,"RETURN",'m',97);
+    add_on_parse_table(92,"EXP_1",'m',118);
+    add_on_parse_table(92,"EXP_FUN_1",'m',117);
+    add_on_parse_table(92,"DCLASS_FUN",'m',119);
+    add_on_parse_table(98,"LOOP_COND",'m',123);
+    add_on_parse_table(100,"LOOP_COND",'m',126);
+    add_on_parse_table(102,"RETURN1",'m',128);
+    add_on_parse_table(102,"EXP",'m',130);
+    add_on_parse_table(102,"DAT",'m',31);
+    add_on_parse_table(107,"PAR_VAL1",'m',133);
+    add_on_parse_table(111,"DCLASS",'m',135);
+    add_on_parse_table(116,"EXP_1",'m',140);
+    add_on_parse_table(116,"EXP_FUN",'m',138);
+    add_on_parse_table(120,"EXP_2",'m',142);
+    add_on_parse_table(120,"EXP",'m',143);
+    add_on_parse_table(120,"DAT",'m',31);
+    add_on_parse_table(121,"EXP",'m',65);
+    add_on_parse_table(121,"DAT",'m',66);
+    add_on_parse_table(121,"PARAM",'m',145);
+    add_on_parse_table(121,"PAR_VAL",'m',146);
+    add_on_parse_table(123,"FUN_BODY",'m',148);
+    add_on_parse_table(124,"EXP",'m',153);
+    add_on_parse_table(124,"LC1",'m',150);
+    add_on_parse_table(124,"COND",'m',151);
+    add_on_parse_table(124,"DAT",'m',154);
+    add_on_parse_table(126,"FUN_BODY",'m',158);
+    add_on_parse_table(127,"ST",'m',160);
+    add_on_parse_table(131,"PAR1",'m',164);
+    add_on_parse_table(136,"EXP",'m',65);
+    add_on_parse_table(136,"DAT",'m',66);
+    add_on_parse_table(136,"PARAM",'m',165);
+    add_on_parse_table(136,"PAR_VAL",'m',110);
+    add_on_parse_table(147,"DCLASS",'m',169);
+    add_on_parse_table(148,"ELSE",'m',171);
+    add_on_parse_table(149,"STS_FUN",'m',173);
+    add_on_parse_table(149,"ST_FUN",'m',90);
+    add_on_parse_table(149,"IF",'m',93);
+    add_on_parse_table(149,"SWITCH",'m',94);
+    add_on_parse_table(149,"WHILE",'m',95);
+    add_on_parse_table(149,"FOR",'m',96);
+    add_on_parse_table(149,"RETURN",'m',97);
+    add_on_parse_table(152,"EXP",'m',153);
+    add_on_parse_table(152,"LC2",'m',175);
+    add_on_parse_table(152,"COND",'m',176);
+    add_on_parse_table(152,"DAT",'m',154);
+    add_on_parse_table(154,"EXP1",'m',178);
+    add_on_parse_table(156,"DCLASS_FUN",'m',180);
+    add_on_parse_table(159,"STS_FUN",'m',184);
+    add_on_parse_table(159,"ST_FUN",'m',90);
+    add_on_parse_table(159,"IF",'m',93);
+    add_on_parse_table(159,"SWITCH",'m',94);
+    add_on_parse_table(159,"WHILE",'m',95);
+    add_on_parse_table(159,"FOR",'m',96);
+    add_on_parse_table(159,"RETURN",'m',97);
+    add_on_parse_table(160,"EXP",'m',186);
+    add_on_parse_table(160,"COND",'m',185);
+    add_on_parse_table(160,"DAT",'m',154);
+    add_on_parse_table(162,"EXP_1",'m',188);
+    add_on_parse_table(170,"EXP",'m',65);
+    add_on_parse_table(170,"DAT",'m',66);
+    add_on_parse_table(170,"PARAM",'m',191);
+    add_on_parse_table(170,"PAR_VAL",'m',146);
+    add_on_parse_table(172,"FUN_BODY",'m',192);
+    add_on_parse_table(177,"EXP",'m',196);
+    add_on_parse_table(177,"DAT",'m',197);
+    add_on_parse_table(179,"EXP",'m',200);
+    add_on_parse_table(179,"DAT",'m',154);
+    add_on_parse_table(181,"EXP",'m',65);
+    add_on_parse_table(181,"DAT",'m',66);
+    add_on_parse_table(181,"PARAM",'m',201);
+    add_on_parse_table(181,"PAR_VAL",'m',202);
+    add_on_parse_table(187,"EXP_",'m',208);
+    add_on_parse_table(187,"EXP_1",'m',210);
+    add_on_parse_table(187,"FUN",'m',211);
+    add_on_parse_table(189,"EXP_2",'m',213);
+    add_on_parse_table(189,"EXP",'m',214);
+    add_on_parse_table(189,"DAT",'m',31);
+    add_on_parse_table(190,"EXP",'m',65);
+    add_on_parse_table(190,"DAT",'m',66);
+    add_on_parse_table(190,"PAR_VAL",'m',216);
+    add_on_parse_table(193,"STS_FUN",'m',217);
+    add_on_parse_table(193,"ST_FUN",'m',90);
+    add_on_parse_table(193,"IF",'m',93);
+    add_on_parse_table(193,"SWITCH",'m',94);
+    add_on_parse_table(193,"WHILE",'m',95);
+    add_on_parse_table(193,"FOR",'m',96);
+    add_on_parse_table(193,"RETURN",'m',97);
+    add_on_parse_table(197,"EXP1",'m',219);
+    add_on_parse_table(199,"DCLASS_FUN",'m',221);
+    add_on_parse_table(203,"DCLASS",'m',225);
+    add_on_parse_table(204,"CASES",'m',227);
+    add_on_parse_table(204,"CASE",'m',228);
+    add_on_parse_table(207,"EXP",'m',231);
+    add_on_parse_table(207,"DAT",'m',31);
+    add_on_parse_table(212,"PAR",'m',232);
+    add_on_parse_table(220,"EXP",'m',238);
+    add_on_parse_table(220,"DAT",'m',197);
+    add_on_parse_table(222,"EXP",'m',65);
+    add_on_parse_table(222,"DAT",'m',66);
+    add_on_parse_table(222,"PARAM",'m',239);
+    add_on_parse_table(222,"PAR_VAL",'m',240);
+    add_on_parse_table(226,"EXP",'m',65);
+    add_on_parse_table(226,"DAT",'m',66);
+    add_on_parse_table(226,"PARAM",'m',242);
+    add_on_parse_table(226,"PAR_VAL",'m',202);
+    add_on_parse_table(228,"CASES",'m',244);
+    add_on_parse_table(228,"CASE",'m',228);
+    add_on_parse_table(229,"DAT",'m',245);
+    add_on_parse_table(237,"EXP",'m',153);
+    add_on_parse_table(237,"LC3",'m',252);
+    add_on_parse_table(237,"COND",'m',253);
+    add_on_parse_table(237,"DAT",'m',154);
+    add_on_parse_table(241,"DCLASS",'m',255);
+    add_on_parse_table(247,"DCLASS_FUN",'m',258);
+    add_on_parse_table(248,"EXP",'m',261);
+    add_on_parse_table(248,"DAT",'m',197);
+    add_on_parse_table(249,"FUN_BODY",'m',262);
+    add_on_parse_table(250,"EXP",'m',65);
+    add_on_parse_table(250,"DAT",'m',66);
+    add_on_parse_table(250,"PAR_VAL",'m',264);
+    add_on_parse_table(256,"EXP",'m',65);
+    add_on_parse_table(256,"DAT",'m',66);
+    add_on_parse_table(256,"PARAM",'m',266);
+    add_on_parse_table(256,"PAR_VAL",'m',240);
+    add_on_parse_table(257,"EXP",'m',267);
+    add_on_parse_table(257,"DAT",'m',268);
+    add_on_parse_table(259,"EXP",'m',65);
+    add_on_parse_table(259,"DAT",'m',66);
+    add_on_parse_table(259,"PARAM",'m',271);
+    add_on_parse_table(256,"PAR_VAL",'m',272);
+    add_on_parse_table(263,"STS_FUN",'m',275);
+    add_on_parse_table(263,"ST_FUN",'m',90);
+    add_on_parse_table(263,"IF",'m',93);
+    add_on_parse_table(263,"SWITCH",'m',94);
+    add_on_parse_table(263,"WHILE",'m',95);
+    add_on_parse_table(263,"FOR",'m',96);
+    add_on_parse_table(263,"RETURN",'m',97);
+    add_on_parse_table(267,"ASIG",'m',278);
+    add_on_parse_table(268,"EXP1",'m',280);
+    add_on_parse_table(270,"DCLASS_FUN",'m',282);
+    add_on_parse_table(273,"DCLASS_FUN",'m',286);
+    add_on_parse_table(274,"FUN_BODY",'m',288);
+    add_on_parse_table(279,"EXP",'m',292);
+    add_on_parse_table(279,"DAT",'m',31);
+    add_on_parse_table(281,"EXP",'m',293);
+    add_on_parse_table(281,"DAT",'m',268);
+    add_on_parse_table(283,"EXP",'m',65);
+    add_on_parse_table(283,"DAT",'m',66);
+    add_on_parse_table(283,"PARAM",'m',294);
+    add_on_parse_table(283,"PAR_VAL",'m',295);
+    add_on_parse_table(287,"EXP",'m',65);
+    add_on_parse_table(287,"DAT",'m',66);
+    add_on_parse_table(287,"PARAM",'m',297);
+    add_on_parse_table(287,"PAR_VAL",'m',272);
+    add_on_parse_table(296,"DCLASS",'m',300);
+    add_on_parse_table(301,"EXP",'m',65);
+    add_on_parse_table(301,"DAT",'m',66);
+    add_on_parse_table(301,"PARAM",'m',303);
+    add_on_parse_table(301,"PAR_VAL",'m',295);
+
+
+
+
+
+}//--///////////////////////////////////////////
 
-    add_on_parse_table(41,"void",'r',18);
-    add_on_parse_table(41,"bool",'r',18);
-    add_on_parse_table(41,"int",'r',18);
-    add_on_parse_table(41,"char",'r',18);
-    add_on_parse_table(41,"id",'r',18);
-    add_on_parse_table(41,"num",'r',18);
-    add_on_parse_table(41,"character",'r',18);
-    add_on_parse_table(41,"booleano",'r',18);
 
-    add_on_parse_table(42,"void",'r',43);
-    add_on_parse_table(42,"bool",'r',43);
-    add_on_parse_table(42,"int",'r',43);
-    add_on_parse_table(42,"char",'r',43);
-    add_on_parse_table(42,"id",'r',43);
-    add_on_parse_table(42,"num",'r',43);
-    add_on_parse_table(42,"character",'r',43);
-    add_on_parse_table(42,"booleano",'r',43);
 
-    add_on_parse_table(43,"id",'d',31);
-    add_on_parse_table(43,"num",'d',32);
-    add_on_parse_table(43,"character",'d',33);
-    add_on_parse_table(43,"booleano",'d',34);
 
 
-    add_on_parse_table(44,"id",'r',71);
-    add_on_parse_table(44,"num",'r',71);
-    add_on_parse_table(44,"character",'r',71);
-    add_on_parse_table(44,"booleano",'r',71);
-
-    add_on_parse_table(45,"id",'r',72);
-    add_on_parse_table(45,"num",'r',72);
-    add_on_parse_table(45,"character",'r',72);
-    add_on_parse_table(45,"booleano",'r',72);
-
-    add_on_parse_table(47,"id",'d',31);
-    add_on_parse_table(47,"num",'d',32);
-    add_on_parse_table(47,"character",'d',33);
-    add_on_parse_table(47,"booleano",'d',34);
-
-    add_on_parse_table(48,"id",'d',58);
-
-    add_on_parse_table(49,"void",'r',9);
-    add_on_parse_table(49,"bool",'r',9);
-    add_on_parse_table(49,"int",'r',9);
-    add_on_parse_table(49,"char",'r',9);
-    add_on_parse_table(49,"id",'r',9);
-    add_on_parse_table(49,"import",'r',9);
-
-    add_on_parse_table(50,"void",'r',10);
-    add_on_parse_table(50,"bool",'r',10);
-    add_on_parse_table(50,"int",'r',10);
-    add_on_parse_table(50,"char",'r',10);
-    add_on_parse_table(50,"id",'r',10);
-    add_on_parse_table(50,"import",'r',10);
-
-    add_on_parse_table(51,"void",'r',16);
-    add_on_parse_table(51,"bool",'r',16);
-    add_on_parse_table(51,"int",'r',16);
-    add_on_parse_table(51,"char",'r',16);
-    add_on_parse_table(51,"id",'r',16);
-    add_on_parse_table(51,"num",'r',16);
-    add_on_parse_table(51,"character",'r',16);
-    add_on_parse_table(51,"booleano",'r',16);
-
-    add_on_parse_table(54,"void",'r',44);
-    add_on_parse_table(54,"bool",'r',44);
-    add_on_parse_table(54,"int",'r',44);
-    add_on_parse_table(54,"char",'r',44);
-    add_on_parse_table(54,"id",'r',44);
-    add_on_parse_table(54,"num",'r',44);
-    add_on_parse_table(54,"character",'r',44);
-    add_on_parse_table(54,"booleano",'r',44);
-
-
-    add_on_parse_table(59,"void",'d',10);
-    add_on_parse_table(59,"bool",'d',11);
-    add_on_parse_table(59,"int",'d',12);
-    add_on_parse_table(59,"char",'d',13);
-    add_on_parse_table(59,"id",'d',70);
-    add_on_parse_table(59,"if",'d',75);
-    add_on_parse_table(59,"switch",'d',76);
-
-    add_on_parse_table(61,"void",'d',10);
-    add_on_parse_table(61,"bool",'d',11);
-    add_on_parse_table(61,"int",'d',12);
-    add_on_parse_table(61,"char",'d',13);
-
-    add_on_parse_table(64,"id",'d',31);
-    add_on_parse_table(64,"num",'d',32);
-    add_on_parse_table(64,"caracter",'d',33);
-    add_on_parse_table(64,"booleano",'d',34);
-
-
-    add_on_parse_table(66,"id",'d',31);
-    add_on_parse_table(66,"num",'d',32);
-    add_on_parse_table(66,"caracter",'d',33);
-    add_on_parse_table(66,"booleano",'d',34);
-
-    add_on_parse_table(68,"void",'d',10);
-    add_on_parse_table(68,"bool",'d',11);
-    add_on_parse_table(68,"int",'d',12);
-    add_on_parse_table(68,"char",'d',13);
-    add_on_parse_table(68,"id",'d',70);
-    add_on_parse_table(68,"if",'d',75);
-    add_on_parse_table(68,"switch",'d',76);
-
-    add_on_parse_table(69,"id",'d',86);
-
-    add_on_parse_table(71,"void",'r',24);
-    add_on_parse_table(71,"bool",'r',24);
-    add_on_parse_table(71,"int",'r',24);
-    add_on_parse_table(71,"char",'r',24);
-    add_on_parse_table(71,"id",'r',24);
-    add_on_parse_table(71,"if",'r',24);
-    add_on_parse_table(71,"switch",'r',24);
-
-    add_on_parse_table(72,"void",'r',25);
-    add_on_parse_table(72,"bool",'r',25);
-    add_on_parse_table(72,"int",'r',25);
-    add_on_parse_table(72,"char",'r',25);
-    add_on_parse_table(72,"id",'r',25);
-    add_on_parse_table(72,"if",'r',25);
-    add_on_parse_table(72,"switch",'r',25);
-
-    add_on_parse_table(73,"void",'r',26);
-    add_on_parse_table(73,"bool",'r',26);
-    add_on_parse_table(73,"int",'r',26);
-    add_on_parse_table(73,"char",'r',26);
-    add_on_parse_table(73,"id",'r',26);
-    add_on_parse_table(73,"if",'r',26);
-    add_on_parse_table(73,"switch",'r',26);
-
-    add_on_parse_table(74,"void",'r',27);
-    add_on_parse_table(74,"bool",'r',27);
-    add_on_parse_table(74,"int",'r',27);
-    add_on_parse_table(74,"char",'r',27);
-    add_on_parse_table(74,"id",'r',27);
-    add_on_parse_table(74,"if",'r',27);
-    add_on_parse_table(74,"switch",'r',27);
-
-    add_on_parse_table(80,"id",'d',94);
-
-    add_on_parse_table(84,"void",'r',19);
-    add_on_parse_table(84,"bool",'r',19);
-    add_on_parse_table(84,"int",'r',19);
-    add_on_parse_table(84,"char",'r',19);
-    add_on_parse_table(84,"id",'r',19);
-
-    add_on_parse_table(87,"void",'r',23);
-    add_on_parse_table(87,"bool",'r',23);
-    add_on_parse_table(87,"int",'r',23);
-    add_on_parse_table(87,"char",'r',23);
-    add_on_parse_table(87,"id",'r',23);
-    add_on_parse_table(87,"if",'r',23);
-    add_on_parse_table(87,"switch",'r',23);
-
-    add_on_parse_table(88,"id",'d',31);
-    add_on_parse_table(88,"num",'d',32);
-    add_on_parse_table(88,"caracter",'d',33);
-    add_on_parse_table(88,"booleano",'d',34);
-
-    add_on_parse_table(90,"id",'d',31);
-    add_on_parse_table(90,"num",'d',32);
-    add_on_parse_table(90,"caracter",'d',33);
-    add_on_parse_table(90,"booleano",'d',34);
-
-    add_on_parse_table(91,"booleano",'d',103);
-
-    add_on_parse_table(92,"id",'d',31);
-    add_on_parse_table(92,"num",'d',32);
-    add_on_parse_table(92,"caracter",'d',33);
-    add_on_parse_table(92,"booleano",'d',34);
-
-    add_on_parse_table(93,"void",'d',10);
-    add_on_parse_table(93,"bool",'d',11);
-    add_on_parse_table(93,"int",'d',12);
-    add_on_parse_table(93,"char",'d',13);
-    add_on_parse_table(93,"id",'d',9);
-
-    add_on_parse_table(96,"void",'r',22);
-    add_on_parse_table(96,"bool",'r',22);
-    add_on_parse_table(96,"int",'r',22);
-    add_on_parse_table(96,"char",'r',22);
-    add_on_parse_table(96,"id",'r',22);
-    add_on_parse_table(96,"if",'r',22);
-    add_on_parse_table(96,"switch",'r',22);
-
-    add_on_parse_table(97,"void",'r',28);
-    add_on_parse_table(97,"bool",'r',28);
-    add_on_parse_table(97,"int",'r',28);
-    add_on_parse_table(97,"char",'r',28);
-    add_on_parse_table(97,"id",'r',28);
-    add_on_parse_table(97,"if",'r',28);
-    add_on_parse_table(97,"switch",'r',28);
-
-    add_on_parse_table(98,"id",'d',31);
-    add_on_parse_table(98,"num",'d',32);
-    add_on_parse_table(98,"caracter",'d',33);
-    add_on_parse_table(98,"booleano",'d',34);
-
-
-    add_on_parse_table(100,"void",'r',31);
-    add_on_parse_table(100,"bool",'r',31);
-    add_on_parse_table(100,"int",'r',31);
-    add_on_parse_table(100,"char",'r',31);
-    add_on_parse_table(100,"id",'r',31);
-    add_on_parse_table(100,"if",'r',31);
-    add_on_parse_table(100,"switch",'r',31);
-
-    add_on_parse_table(105,"id",'d',31);
-    add_on_parse_table(105,"num",'d',32);
-    add_on_parse_table(105,"caracter",'d',33);
-    add_on_parse_table(105,"booleano",'d',34);
-
-    add_on_parse_table(108,"void",'r',30);
-    add_on_parse_table(108,"bool",'r',30);
-    add_on_parse_table(108,"int",'r',30);
-    add_on_parse_table(108,"char",'r',30);
-    add_on_parse_table(108,"id",'r',30);
-    add_on_parse_table(108,"if",'r',30);
-    add_on_parse_table(108,"switch",'r',30);
-
-    add_on_parse_table(110,"id",'d',31);
-    add_on_parse_table(110,"num",'d',32);
-    add_on_parse_table(110,"caracter",'d',33);
-    add_on_parse_table(110,"booleano",'d',34);
-
-    add_on_parse_table(111,"id",'r',73);
-    add_on_parse_table(111,"num",'r',73);
-    add_on_parse_table(111,"caracter",'r',73);
-    add_on_parse_table(111,"booleano",'r',73);
-
-    add_on_parse_table(112,"id",'r',74);
-    add_on_parse_table(112,"num",'r',74);
-    add_on_parse_table(112,"caracter",'r',74);
-    add_on_parse_table(112,"booleano",'r',74);
-
-    add_on_parse_table(113,"id",'r',75);
-    add_on_parse_table(113,"num",'r',75);
-    add_on_parse_table(113,"caracter",'r',75);
-    add_on_parse_table(113,"booleano",'r',75);
-
-    add_on_parse_table(114,"id",'r',76);
-    add_on_parse_table(114,"num",'r',76);
-    add_on_parse_table(114,"caracter",'r',76);
-    add_on_parse_table(114,"booleano",'r',76);
-
-    add_on_parse_table(118,"void",'r',29);
-    add_on_parse_table(118,"bool",'r',29);
-    add_on_parse_table(118,"int",'r',29);
-    add_on_parse_table(118,"char",'r',29);
-    add_on_parse_table(118,"id",'r',29);
-    add_on_parse_table(118,"if",'r',29);
-    add_on_parse_table(118,"switch",'r',29);
-
-
-    add_on_parse_table(119,"void",'d',10);
-    add_on_parse_table(119,"bool",'d',11);
-    add_on_parse_table(119,"int",'d',12);
-    add_on_parse_table(119,"char",'d',13);
-    add_on_parse_table(119,"id",'d',70);
-    add_on_parse_table(119,"if",'d',75);
-    add_on_parse_table(119,"switch",'d',76);
-
-    add_on_parse_table(121,"case",'d',127);
-
-    add_on_parse_table(122,"void",'d',10);
-    add_on_parse_table(122,"bool",'d',11);
-    add_on_parse_table(122,"int",'d',12);
-    add_on_parse_table(122,"char",'d',13);
-    add_on_parse_table(122,"id",'d',70);
-    add_on_parse_table(122,"if",'d',75);
-    add_on_parse_table(122,"switch",'d',76);
-
-    add_on_parse_table(123,"id",'d',129);
-
-    add_on_parse_table(126,"case",'d',127);
-
-    add_on_parse_table(127,"id",'d',31);
-    add_on_parse_table(127,"num",'d',32);
-    add_on_parse_table(127,"caracter",'d',33);
-    add_on_parse_table(127,"booleano",'d',34);
-
-    add_on_parse_table(130,"void",'r',34);
-    add_on_parse_table(130,"bool",'r',34);
-    add_on_parse_table(130,"int",'r',34);
-    add_on_parse_table(130,"char",'r',34);
-    add_on_parse_table(130,"id",'r',34);
-    add_on_parse_table(130,"if",'r',34);
-    add_on_parse_table(130,"else",'d',137);
-    add_on_parse_table(130,"switch",'r',34);
-
-
-    add_on_parse_table(131,"void",'r',35);
-    add_on_parse_table(131,"bool",'r',35);
-    add_on_parse_table(131,"int",'r',35);
-    add_on_parse_table(131,"char",'r',35);
-    add_on_parse_table(131,"id",'r',35);
-    add_on_parse_table(131,"if",'r',35);
-    add_on_parse_table(131,"switch",'r',35);
-
-    add_on_parse_table(134,"void",'r',41);
-    add_on_parse_table(134,"bool",'r',41);
-    add_on_parse_table(134,"int",'r',41);
-    add_on_parse_table(134,"char",'r',41);
-    add_on_parse_table(134,"id",'r',41);
-    add_on_parse_table(134,"if",'r',41);
-    add_on_parse_table(134,"switch",'r',41);
-
-    add_on_parse_table(135,"id",'d',31);
-    add_on_parse_table(135,"num",'d',32);
-    add_on_parse_table(135,"caracter",'d',33);
-    add_on_parse_table(135,"booleano",'d',34);
-
-    add_on_parse_table(136,"void",'r',32);
-    add_on_parse_table(136,"bool",'r',32);
-    add_on_parse_table(136,"int",'r',32);
-    add_on_parse_table(136,"char",'r',32);
-    add_on_parse_table(136,"id",'r',32);
-    add_on_parse_table(136,"if",'r',32);
-    add_on_parse_table(136,"switch",'r',32);
-
-    add_on_parse_table(138,"id",'d',31);
-    add_on_parse_table(138,"num",'d',32);
-    add_on_parse_table(138,"caracter",'d',33);
-    add_on_parse_table(138,"booleano",'d',34);
-
-
-    add_on_parse_table(140,"void",'d',10);
-    add_on_parse_table(140,"bool",'d',11);
-    add_on_parse_table(140,"int",'d',12);
-    add_on_parse_table(140,"char",'d',13);
-    add_on_parse_table(140,"id",'d',70);
-    add_on_parse_table(140,"if",'d',75);
-    add_on_parse_table(140,"switch",'d',76);
-
-
-    add_on_parse_table(145,"id",'d',31);
-    add_on_parse_table(145,"num",'d',32);
-    add_on_parse_table(145,"caracter",'d',33);
-    add_on_parse_table(145,"booleano",'d',34);
-
-    add_on_parse_table(146,"void",'d',10);
-    add_on_parse_table(146,"bool",'d',11);
-    add_on_parse_table(146,"int",'d',12);
-    add_on_parse_table(146,"char",'d',13);
-    add_on_parse_table(146,"id",'d',70);
-    add_on_parse_table(146,"if",'d',75);
-    add_on_parse_table(146,"switch",'d',76);
-
-
-    add_on_parse_table(147,"void",'r',33);
-    add_on_parse_table(147,"bool",'r',33);
-    add_on_parse_table(147,"int",'r',33);
-    add_on_parse_table(147,"char",'r',33);
-    add_on_parse_table(147,"id",'r',33);
-    add_on_parse_table(147,"if",'r',33);
-    add_on_parse_table(147,"switch",'r',33);
-
-    add_on_parse_table(152,"void",'r',42);
-    add_on_parse_table(152,"bool",'r',42);
-    add_on_parse_table(152,"int",'r',42);
-    add_on_parse_table(152,"char",'r',42);
-    add_on_parse_table(152,"id",'r',42);
-    add_on_parse_table(152,"if",'r',42);
-    add_on_parse_table(152,"switch",'r',42);
-
-}
-
-
-/*
-S'--> S
-S --> Id S Integer
-S --> coma
-
-[S', S]
-[S, Id, S, Integer]
-[S, coma]
-
-*/
 void parser::fill_table_reduction(){
     vector<token> vt;
-    //r1
-    vt.push_back("S");
-    t_reduction[1]=vt;
-    //r2
-    vt.clear();
-    vt.push_back("S");
-    vt.push_back("bracket_open");
-    vt.push_back("L");
-    vt.push_back("bracket_close");
-    t_reduction[2]=vt;
-    //r3
-    vt.clear();
-    vt.push_back("S");
-    vt.push_back("Id");
-    t_reduction[3]=vt;
-    //r4
-    vt.clear();
-    vt.push_back("L");
-    vt.push_back("S");
-    t_reduction[4]=vt;
-    //r5
-    vt.clear();
-    vt.push_back("L");
-    vt.push_back("L");
-    vt.push_back("coma");
-    vt.push_back("S");
-    t_reduction[5]=vt;
-}
-
-/* gramtica test 2
-1)	S' --> S
-2)	S --> bracket_open  L  bracket_close
-3)	S --> Id
-4)	L --> S
-5)	L --> L  coma  S
 
 
 
 
 
+    //1)
+        vt.clear();
+        vt.push_back("S");
+        t_reduction[1]=vt;
+    //2)
+        vt.clear();
+        vt.push_back("S");
+        vt.push_back("IMPORTS");
+        vt.push_back("STS");
+        t_reduction[2]=vt;
+    //3)
+        vt.clear();
+        vt.push_back("IMPORTS");
+        vt.push_back("IMPORT");
+        vt.push_back("IMPORTS");
+        t_reduction[3]=vt;
+    //4)
+        vt.clear();
+        vt.push_back("IMPORTS");
+        vt.push_back("EPS");
+        t_reduction[4]=vt;
+    //5)
+        vt.clear();
+        vt.push_back("IMPORT");
+        vt.push_back("import");
+        vt.push_back("id");
+        vt.push_back("DIR");
+        t_reduction[5]=vt;
+    //6)
+        vt.clear();
+        vt.push_back("DIR");
+        vt.push_back(".");
+        vt.push_back("LIB");
+        t_reduction[6]=vt;
+    //7)
+        vt.clear();
+        vt.push_back("DIR");
+        vt.push_back(";");
+        t_reduction[7]=vt;
+    //8)
+        vt.clear();
+        vt.push_back("LIB");
+        vt.push_back("id");
+        vt.push_back("DIR");
+        t_reduction[8]=vt;
+    //9)
+        vt.clear();
+        vt.push_back("LIB");
+        vt.push_back("*");
+        vt.push_back(";");
+        t_reduction[9]=vt;
+    //10)
+        vt.clear();
+        vt.push_back("STS");
+        vt.push_back("ST");
+        vt.push_back("STS");
+        t_reduction[10]=vt;
+    //11)
+        vt.clear();
+        vt.push_back("STS");
+        vt.push_back("EPS");
+        t_reduction[11]=vt;
+    //12)
+        vt.clear();
+        vt.push_back("ST");
+        vt.push_back("dt");
+        vt.push_back("id");
+        vt.push_back("EXP_");
+        t_reduction[12]=vt;
+    //13)
+        vt.clear();
+        vt.push_back("ST");
+        vt.push_back("id");
+        vt.push_back("EXP_1");
+        t_reduction[13]=vt;
+    //14)
+        vt.clear();
+        vt.push_back("EXP_");
+        vt.push_back(";");
+        t_reduction[14]=vt;
+    //15)
+        vt.clear();
+        vt.push_back("EXP_");
+        vt.push_back("EXP_1");
+        t_reduction[15]=vt;
+    //16)
+        vt.clear();
+        vt.push_back("EXP_");
+        vt.push_back("FUN");
+        t_reduction[16]=vt;
+    //17)
+        vt.clear();
+        vt.push_back("EXP_1");
+        vt.push_back("=");
+        vt.push_back("EXP_2");
+        t_reduction[17]=vt;
+    //18)
+        vt.clear();
+        vt.push_back("EXP_2");
+        vt.push_back("EXP");
+        vt.push_back(";");
+        t_reduction[18]=vt;
+    //19)
+        vt.clear();
+        vt.push_back("EXP_2");
+        vt.push_back("new");
+        vt.push_back("id");
+        vt.push_back("(");
+        vt.push_back("PAR_VAL");
+        vt.push_back(")");
+        vt.push_back(";");
+        t_reduction[19]=vt;
+    //20)
+        vt.clear();
+        vt.push_back("FUN");
+        vt.push_back("(");
+        vt.push_back("PAR");
+        vt.push_back(")");
+        vt.push_back("FUN_BODY");
+        t_reduction[20]=vt;
+    //21)
+        vt.clear();
+        vt.push_back("STS_FUN");
+        vt.push_back("ST_FUN");
+        vt.push_back("STS_FUN");
+        t_reduction[21]=vt;
+    //22)
+        vt.clear();
+        vt.push_back("STS_FUN");
+        vt.push_back("EPS");
+        t_reduction[22]=vt;
+    //23)
+        vt.clear();
+        vt.push_back("ST_FUN");
+        vt.push_back("dt");
+        vt.push_back("id");
+        vt.push_back("EXP_FUN");
+        t_reduction[23]=vt;
+    //24)
+        vt.clear();
+        vt.push_back("ST_FUN");
+        vt.push_back("id");
+        vt.push_back("EXP_FUN_1");
+        t_reduction[24]=vt;
+    //25)
+        vt.clear();
+        vt.push_back("ST_FUN");
+        vt.push_back("IF");
+        t_reduction[25]=vt;
+    //26)
+        vt.clear();
+        vt.push_back("ST_FUN");
+        vt.push_back("SWITCH");
+        t_reduction[26]=vt;
+    //27)
+        vt.clear();
+        vt.push_back("ST_FUN");
+        vt.push_back("WHILE");
+        t_reduction[27]=vt;
+    //28)
+        vt.clear();
+        vt.push_back("ST_FUN");
+        vt.push_back("FOR");
+        t_reduction[28]=vt;
+    //29)
+        vt.clear();
+        vt.push_back("ST_FUN");
+        vt.push_back("RETURN");
+        t_reduction[29]=vt;
+    //30)
+        vt.clear();
+        vt.push_back("EXP_FUN");
+        vt.push_back(";");
+        t_reduction[30]=vt;
+    //31)
+        vt.clear();
+        vt.push_back("EXP_FUN");
+        vt.push_back("EXP_1");
+        t_reduction[31]=vt;
+    //32)
+        vt.clear();
+        vt.push_back("EXP_FUN_1");
+        vt.push_back("EXP_1");
+        t_reduction[32]=vt;
+    //33)
+        vt.clear();
+        vt.push_back("EXP_FUN_1");
+        vt.push_back("DCLASS_FUN");
+        vt.push_back(";");
+        t_reduction[33]=vt;
+    //34)
+        vt.clear();
+        vt.push_back("IF");
+        vt.push_back("if");
+        vt.push_back("LOOP_COND");
+        vt.push_back("FUN_BODY");
+        vt.push_back("ELSE");
+        t_reduction[34]=vt;
+    //35)
+        vt.clear();
+        vt.push_back("ELSE");
+        vt.push_back("else");
+        vt.push_back("FUN_BODY");
+        t_reduction[35]=vt;
+    //36)
+        vt.clear();
+        vt.push_back("ELSE");
+        vt.push_back("EPS");
+        t_reduction[36]=vt;
+    //37)
+        vt.clear();
+        vt.push_back("SWITCH");
+        vt.push_back("switch");
+        vt.push_back("(");
+        vt.push_back("id");
+        vt.push_back(")");
+        vt.push_back("{");
+        vt.push_back("CASES");
+        vt.push_back("}");
+        t_reduction[37]=vt;
+    //38)
+        vt.clear();
+        vt.push_back("CASES");
+        vt.push_back("CASE");
+        vt.push_back("CASES");
+        t_reduction[38]=vt;
+    //39)
+        vt.clear();
+        vt.push_back("CASES");
+        vt.push_back("EPS");
+        t_reduction[39]=vt;
+    //40)
+        vt.clear();
+        vt.push_back("CASE");
+        vt.push_back("case");
+        vt.push_back("DAT");
+        vt.push_back(":");
+        vt.push_back("EXP");
+        vt.push_back("ASIG");
+        vt.push_back(";");
+        vt.push_back("break");
+        vt.push_back(";");
+        t_reduction[40]=vt;
+    //41)
+        vt.clear();
+        vt.push_back("ASIG");
+        vt.push_back("=");
+        vt.push_back("EXP");
+        t_reduction[41]=vt;
+    //42)
+        vt.clear();
+        vt.push_back("ASIG");
+        vt.push_back("EPS");
+        t_reduction[42]=vt;
+    //43)
+        vt.clear();
+        vt.push_back("WHILE");
+        vt.push_back("while");
+        vt.push_back("LOOP_COND");
+        vt.push_back("FUN_BODY");
+        t_reduction[43]=vt;
+    //44)
+        vt.clear();
+        vt.push_back("FOR");
+        vt.push_back("for");
+        vt.push_back("(");
+        vt.push_back("ST");
+        vt.push_back("COND");
+        vt.push_back(";");
+        vt.push_back("id");
+        vt.push_back("=");
+        vt.push_back("EXP");
+        vt.push_back(")");
+        vt.push_back("FUN_BODY");
+        t_reduction[44]=vt;
+    //45)
+        vt.clear();
+        vt.push_back("FUN_BODY");
+        vt.push_back("{");
+        vt.push_back("STS_FUN");
+        vt.push_back("}");
+        t_reduction[45]=vt;
+    //46)
+        vt.clear();
+        vt.push_back("RETURN");
+        vt.push_back("return");
+        vt.push_back("RETURN1");
+        t_reduction[46]=vt;
+    //47)
+        vt.clear();
+        vt.push_back("RETURN1");
+        vt.push_back(";");
+        t_reduction[47]=vt;
+    //48)
+        vt.clear();
+        vt.push_back("RETURN1");
+        vt.push_back("EXP");
+        vt.push_back(";");
+        t_reduction[48]=vt;
+    //49)
+        vt.clear();
+        vt.push_back("EXP");
+        vt.push_back("DAT");
+        vt.push_back("EXP1");
+        t_reduction[49]=vt;
+    //50)
+        vt.clear();
+        vt.push_back("EXP1");
+        vt.push_back("op");
+        vt.push_back("EXP");
+        t_reduction[50]=vt;
+    //51)
+        vt.clear();
+        vt.push_back("EXP1");
+        vt.push_back("EPS");
+        t_reduction[51]=vt;
+    //52)
+        vt.clear();
+        vt.push_back("LOOP_COND");
+        vt.push_back("(");
+        vt.push_back("LC1");
+        t_reduction[52]=vt;
+    //53)
+        vt.clear();
+        vt.push_back("LC1");
+        vt.push_back("COND");
+        vt.push_back(")");
+        t_reduction[53]=vt;
+    //54)
+        vt.clear();
+        vt.push_back("LC1");
+        vt.push_back("(");
+        vt.push_back("LC2");
+        t_reduction[54]=vt;
+    //55)
+        vt.clear();
+        vt.push_back("LC2");
+        vt.push_back("COND");
+        vt.push_back(")");
+        vt.push_back("op_bool_cd");
+        vt.push_back("(");
+        vt.push_back("LC3");
+        t_reduction[55]=vt;
+    //56)
+        vt.clear();
+        vt.push_back("LC3");
+        vt.push_back("COND");
+        vt.push_back(")");
+        vt.push_back(")");
+        t_reduction[56]=vt;
+    //57)
+        vt.clear();
+        vt.push_back("COND");
+        vt.push_back("EXP");
+        vt.push_back("op_bool");
+        vt.push_back("EXP");
+        t_reduction[57]=vt;
+    //58)
+        vt.clear();
+        vt.push_back("DAT");
+        vt.push_back("value");
+        t_reduction[58]=vt;
+    //59)
+        vt.clear();
+        vt.push_back("DAT");
+        vt.push_back("id");
+        vt.push_back("DCLASS_FUN");
+        t_reduction[59]=vt;
+    //60)
+        vt.clear();
+        vt.push_back("DCLASS_FUN");
+        vt.push_back("(");
+        vt.push_back("PARAM");
+        t_reduction[60]=vt;
+    //61)
+        vt.clear();
+        vt.push_back("DCLASS_FUN");
+        vt.push_back(".");
+        vt.push_back("id");
+        vt.push_back("DCLASS");
+        t_reduction[61]=vt;
+    //62)
+        vt.clear();
+        vt.push_back("DCLASS_FUN");
+        vt.push_back("EPS");
+        t_reduction[62]=vt;
+    //63)
+        vt.clear();
+        vt.push_back("DCLASS");
+        vt.push_back("(");
+        vt.push_back("PARAM");
+        t_reduction[63]=vt;
+    //64)
+        vt.clear();
+        vt.push_back("PARAM");
+        vt.push_back("PAR_VAL");
+        vt.push_back(")");
+        t_reduction[64]=vt;
+    //65)
+        vt.clear();
+        vt.push_back("PAR");
+        vt.push_back("dt");
+        vt.push_back("id");
+        vt.push_back("PAR1");
+        t_reduction[65]=vt;
+    //66)
+        vt.clear();
+        vt.push_back("PAR");
+        vt.push_back("EPS");
+        t_reduction[66]=vt;
+    //67)
+        vt.clear();
+        vt.push_back("PAR1");
+        vt.push_back(",");
+        vt.push_back("PAR2");
+        t_reduction[67]=vt;
+    //68)
+        vt.clear();
+        vt.push_back("PAR1");
+        vt.push_back("EPS");
+        t_reduction[68]=vt;
+    //69)
+        vt.clear();
+        vt.push_back("PAR2");
+        vt.push_back("dt");
+        vt.push_back("id");
+        vt.push_back("PAR1");
+        t_reduction[69]=vt;
+    //70)
+        vt.clear();
+        vt.push_back("PAR_VAL");
+        vt.push_back("EXP");
+        vt.push_back("PAR_VAL1");
+        t_reduction[70]=vt;
+    //71)
+        vt.clear();
+        vt.push_back("PAR_VAL");
+        vt.push_back("EPS");
+        t_reduction[71]=vt;
+    //72)
+        vt.clear();
+        vt.push_back("PAR_VAL1");
+        vt.push_back(",");
+        vt.push_back("PAR_VAL2");
+        t_reduction[72]=vt;
+    //73)
+        vt.clear();
+        vt.push_back("PAR_VAL1");
+        vt.push_back("EPS");
+        t_reduction[73]=vt;
+
+    // 74)
+        vt.clear();
+        vt.push_back("PAR_VAL2");
+        vt.push_back("EXP");
+        vt.push_back("PAR_VAL1");
+        t_reduction[74]=vt;
 
 
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-S'--> S
-S --> Id S Integer
-S --> coma
-
-        add_on_parse_table(0,"Id",'d',2);
-        add_on_parse_table(0,"coma",'d',3);
-        add_on_parse_table(0,"S",'m',1);
-
-        add_on_parse_table(1,"$",'a',-1);//acepted
-
-        add_on_parse_table(2,"Id",'d',5);
-        add_on_parse_table(2,"coma",'d',6);
-        add_on_parse_table(2,"S",'m',4);
-
-        add_on_parse_table(3,"$",'r',3);
-
-        add_on_parse_table(4,"Integer",'d',7);
-
-        add_on_parse_table(5,"Id",'d',5);
-        add_on_parse_table(5,"coma",'d',6);
-        add_on_parse_table(5,"S",'m',8);
-
-        add_on_parse_table(6,"Integer",'r',3);
-        add_on_parse_table(7,"$",'r',2);
-        add_on_parse_table(8,"Integer",'d',9);
-        add_on_parse_table(9,"Integer",'r',2);
-*/
-
-
-
-
+}//--///////////////////////////////////////////
