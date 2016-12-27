@@ -14,11 +14,9 @@ void parser::parse(){
     state_token st;
     action_state as;
     v_token vt;
-/*
-    print_s_state();
-    print_s_token();
-    print_q_input_tokens();
-    */
+
+    tree *tree_= new tree();
+    node *root;
     while( true ){
         st = make_pair( s_state.top(), q_input_tokens.front() );
         as =parser_table[st];
@@ -29,36 +27,61 @@ void parser::parse(){
                 s_state.push(as.second);
 
             }
-
             if( as.first == 'r' ){// reduccion
                 vt= t_reduction[as.second];
-
-                /**add tratamiento de vacios**/
+                /* tratamiento de vacios*/
+                node *node_p= new node(vt[0]);
                 if(vt[1]=="EPS"){
-                    //cout<<"EPS"<<endl;
+                    /*nuevo nodo(agregar a buffer) -> EPS*/
+                    node *node_= new node("EPS");
+                    node_p->add_branch(node_);
+                    tree_->s_buffer.push(node_p);
+                    /*------*/
+
+                    //cout<<"E: "<< vt[0]<<" --> EPS"<<endl;/*tree*/
                     s_token.push( vt[0] );
-                    //escatar ultimo estado
+                    //rescatar ultimo estado
                     st = make_pair(s_state.top(), s_token.top() );
                     action_state asss = parser_table[st];
                     s_state.push(asss.second);
                     continue;
-                }
-                //check_error(vt);
-                for (int i = vt.size()-1; i >0  ; --i) {
-                    if( s_token.top() == vt[i] ){
-                        s_token.pop();
-                        s_state.pop();
-                    }else{
-                        cout<<"error: reduccion "<<endl;
-                        break;
+                }else{
+                    int vt_size=vt.size();
+                    for (int i = vt_size-1; i >0  ; --i) {
+                        if( s_token.top() == vt[i] ){
+                            /**/
+                            if(tree_->is_terminal_token( vt[i] ) ){
+                                node *node_= new node(vt[i]);
+                                node_p->add_branch( node_ );
+                                cout<<"branch: "<<node_p->label<<" -> "<<node_->label<<endl;
+                            }else{
+                                cout<<"actual node: "<<tree_->s_buffer.top()->label<<endl;
+                                node_p->add_branch( tree_->s_buffer.top() );
+                                tree_->s_buffer.pop();
+                            }
+                            /**/
+                            s_token.pop();
+                            s_state.pop();
+                        }else{
+                            cout<<"error: reduccion "<<endl;
+                            break;
+                        }
                     }
-                }
+                    /*tree padre*/
+                     //tree_->set_on_buffer(vt[0],node_p);
+                     tree_->s_buffer.push(node_p);
 
-                s_token.push(vt[0]);//S
-                //rescatar ultimo estado
-                st = make_pair(s_state.top(), s_token.top() );
-                action_state ass = parser_table[st];
-                s_state.push(ass.second);
+                     if(node_p->label == "S"){
+                         root = node_p;
+                     }
+                    /**/
+
+                    s_token.push(vt[0]);//S
+                    //rescatar ultimo estado
+                    st = make_pair(s_state.top(), s_token.top() );
+                    action_state ass = parser_table[st];
+                    s_state.push(ass.second);
+                }
             }
             if( as.first == 'a' ){// aceptacion
                 cout<<"cadena aceptada"<<endl;
@@ -66,14 +89,14 @@ void parser::parse(){
             }
         }else{
             cout<<"error: cadena no aceptada "<<endl;
-            //print_s_state();
-            //print_s_token();
-            //print_q_input_tokens();
+            /* print_s_state(); print_s_token(); print_q_input_tokens();  */
             break;
 
         }
     }
-
+    /*print root*/
+    tree_->set_root(root);
+    tree_->print_tree_dot();
 }
 /*
 void parser::check_error(v_token vt){

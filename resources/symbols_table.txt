@@ -8,11 +8,8 @@ for for
 switch switch
 case case
 while while
-do keyword
 break break
-continue keyword
 return return
-goto keyword
 . .
 : :
 , ,

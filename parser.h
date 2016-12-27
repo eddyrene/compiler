@@ -1,6 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 #include "utilities.h"
+#include "tree.h"
 
 typedef char action;
 typedef pair<state,token> state_token;

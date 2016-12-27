@@ -33,7 +33,7 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = compiler1.0.0
-DISTDIR = /home/n/Documents/proyecto-compiladores/compiler/.tmp/compiler1.0.0
+DISTDIR = /home/n/Desktop/compi-project-test/compiler/.tmp/compiler1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-O1 -Wl,-rpath,/home/n/Qt5.7.0/5.7/gcc_64/lib
 LIBS          = $(SUBLIBS) -L/home/n/Qt5.7.0/5.7/gcc_64/lib -lQt5Widgets -L/usr/lib64 -lQt5Gui -lQt5Core -lGL -lpthread 
@@ -54,7 +54,8 @@ SOURCES       = main.cpp \
 		lexer.cpp \
 		symbols_table.cpp \
 		automata.cpp \
-		parser.cpp moc_mainwindow.cpp
+		parser.cpp \
+		tree.cpp moc_mainwindow.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		compiler.o \
@@ -62,6 +63,7 @@ OBJECTS       = main.o \
 		symbols_table.o \
 		automata.o \
 		parser.o \
+		tree.o \
 		moc_mainwindow.o
 DIST          = resources/symbols_table.txt \
 		../../../Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
@@ -218,13 +220,15 @@ DIST          = resources/symbols_table.txt \
 		symbols_table.h \
 		automata.h \
 		utilities.h \
-		parser.h main.cpp \
+		parser.h \
+		tree.h main.cpp \
 		mainwindow.cpp \
 		compiler.cpp \
 		lexer.cpp \
 		symbols_table.cpp \
 		automata.cpp \
-		parser.cpp
+		parser.cpp \
+		tree.cpp
 QMAKE_TARGET  = compiler
 DESTDIR       = 
 TARGET        = compiler
@@ -555,8 +559,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h compiler.h lexer.h symbols_table.h automata.h utilities.h parser.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp mainwindow.cpp compiler.cpp lexer.cpp symbols_table.cpp automata.cpp parser.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.h compiler.h lexer.h symbols_table.h automata.h utilities.h parser.h tree.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp mainwindow.cpp compiler.cpp lexer.cpp symbols_table.cpp automata.cpp parser.cpp tree.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
 
@@ -694,7 +698,7 @@ moc_mainwindow.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		parser.h \
 		mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
-	/home/n/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/n/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/n/Documents/proyecto-compiladores/compiler -I/home/n/Qt5.7.0/5.7/gcc_64/include -I/home/n/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/n/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/n/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
+	/home/n/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/n/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/n/Desktop/compi-project-test/compiler -I/home/n/Qt5.7.0/5.7/gcc_64/include -I/home/n/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/n/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/n/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -1020,6 +1024,9 @@ automata.o: automata.cpp automata.h
 parser.o: parser.cpp parser.h \
 		utilities.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o parser.o parser.cpp
+
+tree.o: tree.cpp tree.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o tree.o tree.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
