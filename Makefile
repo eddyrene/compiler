@@ -33,7 +33,11 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = compiler1.0.0
+<<<<<<< HEAD
 DISTDIR = /home/micaela/Desktop/Uicompi/compiler-master/.tmp/compiler1.0.0
+=======
+DISTDIR = /home/n/Desktop/compi-project-test/compiler/.tmp/compiler1.0.0
+>>>>>>> 3bcbd20e3444b623f0d59f46d1eb3e6cedfd5d93
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/home/micaela/Qt5.7.0/5.7/gcc_64/lib
 LIBS          = $(SUBLIBS) -L/home/micaela/Qt5.7.0/5.7/gcc_64/lib -lQt5Widgets -L/usr/lib64 -lQt5Gui -lQt5Core -lGL -lpthread 
@@ -699,10 +703,16 @@ moc_mainwindow.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		symbols_table.h \
 		automata.h \
 		parser.h \
+<<<<<<< HEAD
 		tree.h \
 		mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/micaela/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/micaela/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/micaela/Desktop/Uicompi/compiler-master -I/home/micaela/Qt5.7.0/5.7/gcc_64/include -I/home/micaela/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/micaela/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/micaela/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
+=======
+		mainwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/bin/moc
+	/home/n/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/n/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/n/Desktop/compi-project-test/compiler -I/home/n/Qt5.7.0/5.7/gcc_64/include -I/home/n/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/n/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/n/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
+>>>>>>> 3bcbd20e3444b623f0d59f46d1eb3e6cedfd5d93
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -830,7 +840,10 @@ main.o: main.cpp mainwindow.h \
 		symbols_table.h \
 		automata.h \
 		parser.h \
+<<<<<<< HEAD
 		tree.h \
+=======
+>>>>>>> 3bcbd20e3444b623f0d59f46d1eb3e6cedfd5d93
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
@@ -947,7 +960,10 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		symbols_table.h \
 		automata.h \
 		parser.h \
+<<<<<<< HEAD
 		tree.h \
+=======
+>>>>>>> 3bcbd20e3444b623f0d59f46d1eb3e6cedfd5d93
 		ui_mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
@@ -1012,8 +1028,12 @@ compiler.o: compiler.cpp compiler.h \
 		utilities.h \
 		symbols_table.h \
 		automata.h \
+<<<<<<< HEAD
 		parser.h \
 		tree.h
+=======
+		parser.h
+>>>>>>> 3bcbd20e3444b623f0d59f46d1eb3e6cedfd5d93
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o compiler.o compiler.cpp
 
 lexer.o: lexer.cpp lexer.h \
@@ -1036,10 +1056,14 @@ parser.o: parser.cpp parser.h \
 		automata.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o parser.o parser.cpp
 
+<<<<<<< HEAD
 tree.o: tree.cpp tree.h \
 		utilities.h \
 		symbols_table.h \
 		automata.h
+=======
+tree.o: tree.cpp tree.h
+>>>>>>> 3bcbd20e3444b623f0d59f46d1eb3e6cedfd5d93
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o tree.o tree.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 

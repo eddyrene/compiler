@@ -60,8 +60,11 @@ class tree{
             m_terminal_nodes["EPS"]=true;
             m_terminal_nodes["id"]=true;
             m_terminal_nodes["value"]=true;
+<<<<<<< HEAD
             m_terminal_nodes["booleano"]=true;
 
+=======
+>>>>>>> 3bcbd20e3444b623f0d59f46d1eb3e6cedfd5d93
         }
 
 
