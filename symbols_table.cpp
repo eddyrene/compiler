@@ -14,19 +14,53 @@ symbols_table::symbols_table()
  */
 void symbols_table::read()
 {
-    ifstream doc(file_name);
-    if(!doc.is_open())
-        cout<<"error al abrir el archivo"<<endl;
-    string t,a,b;
-    int i=0;
-    getline(doc,t);
-    getline(doc,t);
+    table->insert({"import","import"});
+    table->insert({"new","new"});
+    table->insert({"if","if"});
+    table->insert({"else","else"});
+    table->insert({"for","for"});
+    table->insert({"switch","switch"});
+    table->insert({"case","case"});
+    table->insert({"while","while"});
+    table->insert({"break","break"});
+    table->insert({"return","return"});
+    table->insert({".","."});
+    table->insert({":",":"});
+    table->insert({",",","});
+    table->insert({";",";"});
+    table->insert({"(","("});
+    table->insert({")",")"});
+    table->insert({"{","{"});
+    table->insert({"}","}"});
+    table->insert({"//","slcomment"});
+    table->insert({"/*","mlcomment_open"});
+    table->insert({"*/","mlcomment_close"});
+    table->insert({"#define","header"});
+    table->insert({"#include","header"});
+    table->insert({"=","="});
+    table->insert({"+","op"});
+    table->insert({"-","op"});
+    table->insert({"*","*"});
+    table->insert({"/","division_op"});
+    table->insert({"%","modulo_op"});
+    table->insert({"==","op_bool"});
+    table->insert({"!=","op_bool"});
+    table->insert({"!","op_bool_not"});
+    table->insert({"<","op_bool"});
+    table->insert({">","op_bool"});
+    table->insert({"<=","op_bool"});
+    table->insert({">=","op_bool"});
+    table->insert({"&&","op_bool_cd"});
+    table->insert({"||","op_bool_cd"});
+    table->insert({"true","value"});
+    table->insert({"false","value"});
+    table->insert({"int","dt"});
+    table->insert({"char","dt"});
+    table->insert({"void","dt"});
+    table->insert({"bool","dt"});
+    table->insert({"++","increment_op"});
+    table->insert({"--","decrement_op"});
 
-    while(!doc.eof())
-    {
-        doc>>a>>b;
-        table->insert({a,b});
-    }
 }
 
 void symbols_table::print_table()
