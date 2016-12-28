@@ -88,11 +88,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-<<<<<<< HEAD
-        menuBar->setGeometry(QRect(0, 0, 1004, 19));
-=======
         menuBar->setGeometry(QRect(0, 0, 1004, 25));
->>>>>>> 3bcbd20e3444b623f0d59f46d1eb3e6cedfd5d93
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));

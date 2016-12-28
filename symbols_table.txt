@@ -38,8 +38,8 @@ return return
 >= op_bool
 && op_bool_cd
 || op_bool_cd
-true booleano
-false booleano
+true value
+false value
 int dt
 char dt
 void dt

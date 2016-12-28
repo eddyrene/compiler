@@ -8,9 +8,7 @@ parser::parser(){
 
 void parser::parse(){
 
-    s_state.push(0); //0 1 2
-    //s_token Id coma
-    //q_input_tokens; // |Id| |coma| |Integer| |$|
+    s_state.push(0);
     state_token st;
     action_state as;
     v_token vt;
@@ -32,13 +30,12 @@ void parser::parse(){
                 /* tratamiento de vacios*/
                 node *node_p= new node(vt[0]);
                 if(vt[1]=="EPS"){
-                    /*nuevo nodo(agregar a buffer) -> EPS*/
+                    /*padre -> EPS*/
                     node *node_= new node("EPS");
                     node_p->add_branch(node_);
                     tree_->s_buffer.push(node_p);
                     /*------*/
 
-                    //cout<<"E: "<< vt[0]<<" --> EPS"<<endl;/*tree*/
                     s_token.push( vt[0] );
                     //rescatar ultimo estado
                     st = make_pair(s_state.top(), s_token.top() );
@@ -67,8 +64,7 @@ void parser::parse(){
                             break;
                         }
                     }
-                    /*tree padre*/
-                     //tree_->set_on_buffer(vt[0],node_p);
+                    /*add padre*/
                      tree_->s_buffer.push(node_p);
 
                      if(node_p->label == "S"){
@@ -89,7 +85,7 @@ void parser::parse(){
             }
         }else{
             cout<<"error: cadena no aceptada "<<endl;
-            /* print_s_state(); print_s_token(); print_q_input_tokens();  */
+             //print_s_state(); print_s_token(); print_q_input_tokens();
             break;
 
         }

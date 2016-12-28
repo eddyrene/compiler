@@ -3,7 +3,7 @@
 symbols_table::symbols_table()
 {
     table= new my_hash;
-    file_name="/home/micaela/Desktop/Uicompi/compiler-master/resources/symbols_table.txt";
+    file_name="symbols_table.txt";
     this->read();
     au = new automata();
     au->fill_matriz();
