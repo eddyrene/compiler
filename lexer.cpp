@@ -94,8 +94,6 @@ void lexer::print_buffer_tokens(){
     }
 }
 
-
-
 vector<token> lexer::get_buffer_tokens(){
     return buffer_tokens;
 }

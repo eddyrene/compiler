@@ -15,22 +15,17 @@ class symbols_table
 {
 
 private:
-    my_hash * table;
-    string file_name;
-    automata * au;
+    my_hash * table; // Estructura de almenamiento
+    automata * au; // automata , identifadores o numeros(enteros)
 private:
-    bool entero( string cadena );
-    bool is_identifier( string cadena);
-    string evaluar( string cadena );
-
-
+     string evaluar( string cadena ); // Evaluar el en el automata
 public:
     symbols_table();
-    void read();
-    void print_table();
+    void read(); // Llena la tabla
+    void print_table(); // Mostrar tabla
     my_hash* get_table();
     string get_token(string p);
-    bool is(string p);
+    bool is(string p); // está en la tabla ?
 };
 
 #endif // SYMBOLS_TABLE_H

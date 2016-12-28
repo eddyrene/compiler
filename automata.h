@@ -19,14 +19,14 @@ private:
    vector<string> f_names;
 public:
     automata();
-    void fill_matriz();
-    void print_matriz();
-    int is_alpha(char c, int a);
-    int is_minus(char c, int a);
-    int is_subindent(char c, int a);
-    int is_digit(char c, int a);
-    int eval(char c, int a);
-    string executar(string a);
+    void fill_matriz();//llenar la tabla de estados
+    void print_matriz();// imprimir la tabla
+    int is_alpha(char c, int a); /* Verifica si es un caracter del alfabeto */
+    int is_minus(char c, int a); /* Verifica si es un subguion */
+    int is_subindent(char c, int a);/*Verifica si es un digito */
+    int is_digit(char c, int a);/*Verifica si es un digito */
+    int eval(char c, int a);/*Evaluacion en el automata*/
+    string executar(string a);/*Evaluacion en el automata*/
 
     void (automata::*f0[4])(char,int) const; // vector de punteros a funciones
 
