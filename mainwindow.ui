@@ -10,6 +10,12 @@
     <height>795</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>400</width>
+    <height>0</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
@@ -28,13 +34,85 @@
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QTextEdit" name="textEdit"/>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QTextEdit" name="textEdit"/>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Tokenización:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTextEdit" name="textEdit_2"/>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
-       <property name="text">
-        <string>run</string>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
        </property>
+       <property name="title">
+        <string>GroupBox</string>
+       </property>
+       <widget class="QPushButton" name="pushButton">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>30</y>
+          <width>80</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>run</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_3">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>150</y>
+          <width>91</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>A. Léxico</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_4">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>250</y>
+          <width>91</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>A.Semantico</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_5">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>200</y>
+          <width>91</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>A. Sintáctico</string>
+        </property>
+       </widget>
       </widget>
      </item>
      <item>
@@ -76,14 +154,27 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>60</x>
       <y>0</y>
       <width>161</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string>Codigo:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>0</y>
+      <width>221</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Arbol de Análisis Sintactico</string>
     </property>
    </widget>
   </widget>
@@ -93,10 +184,7 @@
      <x>0</x>
      <y>0</y>
      <width>1004</width>
-
      <height>19</height>
-
-     <height>25</height>
     </rect>
    </property>
   </widget>

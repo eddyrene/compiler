@@ -12,32 +12,41 @@ MainWindow::~MainWindow(){
 }
 
 void MainWindow::on_pushButton_clicked(){
+   // executar();
+    on_pushButton_3_clicked(); // Analisis Léxico
+    on_pushButton_5_clicked(); // Analisis
+}
 
 
 
+void MainWindow::on_pushButton_3_clicked()
+{
 
-            // ui->label_arbol->setPixmap(QPixmap::fromImage( image ));
+    executar();
+    vector<string> v_s= _compiler._lexer.get_buffer_tokens();
+    string string_tokens="";
+    for(auto i:v_s){
+        string_tokens = string_tokens+i+'\n';
+    }
+    ui->textEdit_2->setText( QString::fromStdString(string_tokens) );
+}
 
-    //ui->textEdit_2->setText(ui->textEdit->toPlainText());
-    //-----------------------
+void MainWindow::on_pushButton_5_clicked()
+{
+
+
+    QImage image("tree.gv.png");
+    ui->label_arbol->setPixmap(QPixmap::fromImage( image ));
+
+
+}
+
+void MainWindow::executar()
+{
     QString qst=ui->textEdit->toPlainText();
     string code= qst.toStdString();
     cout<< code <<"\n"<<endl;
     /* ejecucion */
     _compiler.set_source_code(code);
     _compiler.run();
-
-    QImage image("tree.gv.png");
-    if( image.isNull() )
-    {
-        cout<<"error , no se pudo cargar la imagen"<<endl;
-    }
-    ui->label_arbol->setPixmap(QPixmap::fromImage( image ));
-
-
-    cout<<endl;
-    //-----------------------
-
 }
-
-

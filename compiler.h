@@ -5,7 +5,7 @@
 #include "parser.h"
 
 class compiler{
-    private:
+    public:
         lexer _lexer; /* contiene el bufer de tokens  */
         parser _parser;
 
