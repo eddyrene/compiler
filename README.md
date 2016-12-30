@@ -3,8 +3,8 @@
 
 #codigos que acepta la gramatica:
 #====codigo 1=====
-import id ;
-import id . id ;
+import id;
+import id.id;
 import id . id . id . id . id ;
 import id . * ;
 import id . id . * ;
@@ -52,7 +52,7 @@ int pin6 =6;
 int pin9 =9;
 int estado;
 int vel = 75;
-void setup() {
+void setup(){
   Serial.begin (9600);
   pinMode(3, OUTPUT);
   pinMode(5, OUTPUT);
