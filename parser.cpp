@@ -50,9 +50,9 @@ void parser::parse(){
                             if(tree_->is_terminal_token( vt[i] ) ){
                                 node *node_= new node(vt[i]);
                                 node_p->add_branch( node_ );
-                                cout<<"branch: "<<node_p->label<<" -> "<<node_->label<<endl;
+                                //cout<<"branch: "<<node_p->label<<" -> "<<node_->label<<endl;
                             }else{
-                                cout<<"actual node: "<<tree_->s_buffer.top()->label<<endl;
+                                //cout<<"actual node: "<<tree_->s_buffer.top()->label<<endl;
                                 node_p->add_branch( tree_->s_buffer.top() );
                                 tree_->s_buffer.pop();
                             }

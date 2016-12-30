@@ -19,6 +19,10 @@ class compiler{
         void set_source_code(string code);
         void run();
 
+        void run_lexer();
+        void run_parser();
+
+
     public: /* functions utilities */
         //print .. etc
 

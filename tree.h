@@ -29,41 +29,13 @@ class tree{
         map<token,bool> m_terminal_nodes;
 
     public:
-        tree(){
-            root = NULL;
-            insert_terminal_tokens();
-        }
-        tree(node *n){
-            root = n;
-            insert_terminal_tokens();
-        }
-        void set_root(node *n){
-            root = n;
-            cout<<"root:"<<n->label<<endl;
-        }
-
+        tree();
+        tree(node *n);
+        void set_root(node *n);
         void print_tree_to_file(node *n);
         void print_tree_dot();
-
-        bool is_terminal_token(token tk){
-            symbols_table st;
-            if( st.is(tk) || m_terminal_nodes[tk] ){
-                return true;
-            }
-            return false;
-        }
-
-        void insert_terminal_tokens(){
-            m_terminal_nodes["op"]=true;
-            m_terminal_nodes["op_bool"]=true;
-            m_terminal_nodes["dt"]=true;
-            m_terminal_nodes["EPS"]=true;
-            m_terminal_nodes["id"]=true;
-            m_terminal_nodes["value"]=true;
-            m_terminal_nodes["booleano"]=true;
-        }
-
-
+        bool is_terminal_token(token tk);
+        void insert_terminal_tokens();
 };
 
 

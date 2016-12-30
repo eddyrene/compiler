@@ -19,10 +19,12 @@ void MainWindow::on_pushButton_clicked(){
 
 
 
-void MainWindow::on_pushButton_3_clicked()
-{
+void MainWindow::on_pushButton_3_clicked(){//lexer
+    QString qst=ui->textEdit->toPlainText();
+    string code= qst.toStdString();
+    _compiler.set_source_code(code);
+    _compiler.run_lexer();
 
-    executar();
     vector<string> v_s= _compiler._lexer.get_buffer_tokens();
     string string_tokens="";
     for(auto i:v_s){
@@ -31,18 +33,16 @@ void MainWindow::on_pushButton_3_clicked()
     ui->textEdit_2->setText( QString::fromStdString(string_tokens) );
 }
 
-void MainWindow::on_pushButton_5_clicked()
-{
 
-
+void MainWindow::on_pushButton_5_clicked(){//parser
+    on_pushButton_3_clicked();
+    _compiler.run_parser();
     QImage image("tree.gv.png");
     ui->label_arbol->setPixmap(QPixmap::fromImage( image ));
-
-
 }
 
-void MainWindow::executar()
-{
+
+void MainWindow::executar(){
     QString qst=ui->textEdit->toPlainText();
     string code= qst.toStdString();
     cout<< code <<"\n"<<endl;
