@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     symbols_table.cpp \
     automata.cpp \
     parser.cpp \
-    tree.cpp
+    tree.cpp \
+    semantic.cpp
 
 HEADERS  += mainwindow.h \
     compiler.h \
@@ -27,7 +28,8 @@ HEADERS  += mainwindow.h \
     automata.h \
     utilities.h \
     parser.h \
-    tree.h
+    tree.h \
+    semantic.h
 
 FORMS    += mainwindow.ui
 

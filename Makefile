@@ -55,7 +55,8 @@ SOURCES       = main.cpp \
 		symbols_table.cpp \
 		automata.cpp \
 		parser.cpp \
-		tree.cpp moc_mainwindow.cpp
+		tree.cpp \
+		semantic.cpp moc_mainwindow.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		compiler.o \
@@ -64,6 +65,7 @@ OBJECTS       = main.o \
 		automata.o \
 		parser.o \
 		tree.o \
+		semantic.o \
 		moc_mainwindow.o
 DIST          = resources/symbols_table.txt \
 		../../../Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
@@ -222,14 +224,16 @@ DIST          = resources/symbols_table.txt \
 		automata.h \
 		utilities.h \
 		parser.h \
-		tree.h main.cpp \
+		tree.h \
+		semantic.h main.cpp \
 		mainwindow.cpp \
 		compiler.cpp \
 		lexer.cpp \
 		symbols_table.cpp \
 		automata.cpp \
 		parser.cpp \
-		tree.cpp
+		tree.cpp \
+		semantic.cpp
 QMAKE_TARGET  = compiler
 DESTDIR       = 
 TARGET        = compiler
@@ -562,8 +566,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h compiler.h lexer.h symbols_table.h automata.h utilities.h parser.h tree.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp mainwindow.cpp compiler.cpp lexer.cpp symbols_table.cpp automata.cpp parser.cpp tree.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.h compiler.h lexer.h symbols_table.h automata.h utilities.h parser.h tree.h semantic.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp mainwindow.cpp compiler.cpp lexer.cpp symbols_table.cpp automata.cpp parser.cpp tree.cpp semantic.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
 
@@ -1044,6 +1048,13 @@ tree.o: tree.cpp tree.h \
 		symbols_table.h \
 		automata.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o tree.o tree.cpp
+
+semantic.o: semantic.cpp semantic.h \
+		utilities.h \
+		tree.h \
+		symbols_table.h \
+		automata.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o semantic.o semantic.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
