@@ -4,10 +4,15 @@
 #codigos que acepta la gramatica:
 #====codigo 1=====
 import id;
+
 import id.id;
+
 import id . id . id . id . id ;
+
 import id . * ;
+
 import id . id . * ;
+
 
 int a ;
 bool b=5;
