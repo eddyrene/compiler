@@ -2,7 +2,7 @@
 
 
 #codigos que acepta la gramatica:
-#=======================codigo 1========================
+#====codigo 1=====
 import id ;
 import id . id ;
 import id . id . id . id . id ;
@@ -15,7 +15,7 @@ char c=5+8;
 int f= new person() ;
 int d=10+person.age(2016-1995);
 int e=fn();
-#======================codigo 2=========================
+#=====codigo 2======
 import class.*;
 
 int a=1;
@@ -44,7 +44,7 @@ void fun(){
 	}
 }
 
-#====================codigo 3==========================
+#=======codigo 3==========
 
 int pin3 =3;
 int pin5 =5;
